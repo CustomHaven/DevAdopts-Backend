@@ -3,7 +3,7 @@ pipeline {
     environment {
         nodeHome = tool "myNodeJs"
         dockerHome = tool "myDocker"
-        PATH = "$dockerHome/bin:$nodeHome/bin:$groovyHome/bin:$PATH"
+        PATH = "$dockerHome/bin:$nodeHome/bin:$PATH"
     }
     stages {
         stage("Checkout") {
