@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+    environment {
+        nodeHome = tool "myNodeJs"
+        dockerHome = tool "myDocker"
+        PATH = "$dockerHome/bin:$nodeHome/bin:$groovyHome/bin:$PATH"
+    }
+    stages {
+        stage("Checkout") {
+            sh "pwd"
+            echo "Docker Home"
+            sh "docker --version"
+            echo "We have node"
+            sh "node --version"
+            echo "We have npm"
+            sh "npm --version"
+            echo "checking if terraform version is working"
+            sh "terraform --version"
+            echo "Will kuberenetes WORK"
+            sh "kubectl version --client"
+            echo "AWS in our system"
+            sh "aws --version"
+            echo "Azure found"
+            sh "az --version"
+            echo "GCP found"
+            sh "gcloud --version"
+            echo "ansible found"
+            sh "ansible --version"
+            echo "Path: $Path"
+            echo "Build Number: $env.BUILD_NUMBER"
+            echo "Build ID: $env.BUILD_ID"
+            echo "Build URL: $env.BUILD_URL"
+            echo "Build Tag: $env.BUILD_TAG"
+            echo "Job Name: $env.JOB_NAME"
+        }
+    }
+    post {
+		always {
+			echo "I always run"
+		}
+		success {
+			echo "I run when successful"
+		}
+		failure {
+            script {
+                withCredentials([usernamePassword(credentialsId: "e47030c6-b9aa-4279-8df1-5ebe235f9865", usernameVariable: "EMAIL_USER", passwordVariable: "EMAIL_PASS")]) {
+                    emailext (
+                        to: "mmuseaden@gmail.com,${EMAIL_USER}",
+                        subject: "Jenkins Pipeline Failed: ${env.JOB_NAME} ${env.BUILD_NUMBER}",
+                        body: "The Jenkins pipeline has failed. Please check the build logs for details: ${env.BUILD_URL}",
+                        from: "Jenkins Pipeline <${EMAIL_USER}>",
+                        mimeType: "text/plain"
+                    )
+                }
+            }
+            echo "I run when failed"
+		}
+	}
+}
