@@ -127,12 +127,12 @@ VALUES
 
 
 -- Insert data into dogs table
-INSERT INTO dogs (dog_name, dog_initial_price, dog_monthly_price, dog_long_term_price, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, other_animals, fencing, experience_required, adopted)
+INSERT INTO dogs (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, other_animals, fencing, experience_required, adopted)
 VALUES 
-('Max', 200, 50, 500, 'Male', 'Brown', 4, 'Medium', 'Labrador Retriever', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', FALSE),
-('Bella', 150, 45, 400, 'Female', 'Black', 3, 'Small', 'Pomeranian', TRUE, FALSE, 'Medium', 'Small', TRUE, 'Medium', TRUE, '4', TRUE),
-('Charlie', 300, 60, 600, 'Male', 'White', 5, 'Large', 'German Shepherd', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '8', FALSE),
-('Luna', 180, 55, 450, 'Female', 'Gray', 2, 'Medium', 'Siberian Husky', FALSE, TRUE, 'Medium', 'Medium', TRUE, 'Medium', FALSE, '5', TRUE);
+('Max', 'Male', 'Brown', 4, 'Medium', 'Labrador Retriever', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', FALSE),
+('Bella', 'Female', 'Black', 3, 'Small', 'Pomeranian', TRUE, FALSE, 'Medium', 'Small', TRUE, 'Medium', TRUE, '4', TRUE),
+('Charlie', 'Male', 'White', 5, 'Large', 'German Shepherd', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '8', FALSE),
+('Luna', 'Female', 'Gray', 2, 'Medium', 'Siberian Husky', FALSE, TRUE, 'Medium', 'Medium', TRUE, 'Medium', FALSE, '5', TRUE);
 
 
 -- Insert data into initial_adoption_cost table
