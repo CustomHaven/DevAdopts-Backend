@@ -47,7 +47,7 @@ class Dog {
         }
 
         const existingDog = await db.query("SELECT * FROM dogs WHERE dog_id = $1", [dog_id]);
-
+        console.log("WHY", existingDog.rows)
         if (existingDog.rows.length === 0) {
             const response = await db.query(`INSERT INTO dogs 
                 (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, 
@@ -57,6 +57,7 @@ class Dog {
                     living_space_size, garden, allergenic, other_animals, fencing, experience_required]);
             return new Dog(response.rows[0]);
         }
+        console.log("first", existingDog.rows)
         throw new Error("Dog already exist");
     }
 
@@ -73,11 +74,11 @@ class Dog {
         const response = await db.query(`UPDATE dogs
                                             SET dog_name = $1, gender = $2, colour = $3, age = $4, size = $5, breed = $6, young_children_compatibility = $7, 
                                             small_animal_compatibility = $8, activity_levels = $9, living_space_size = $10, garden = $11, allergenic = $12,
-                                            other_animals = $13, fencing = $14, experience_required = $15, timestamp = $16
-                                            WHERE dog_id = $17
+                                            other_animals = $13, fencing = $14, experience_required = $15, adopted = $16, timestamp = $17
+                                            WHERE dog_id = $18
                                             RETURNING *`, 
-            [this.dog_name, this.gender, this.colour, this.age, this.size, this.breed, this.young_children_compatibility, this.small_animal_compatibility, 
-            this.activity_levels, this.living_space_size, this.garden, this.allergenic, this.other_animals, this.fencing, this.experience_required, this.timestamp, this.dog_id]);
+            [this.dog_name, this.gender, this.colour, this.age, this.size, this.breed, this.young_children_compatibility, this.small_animal_compatibility, this.activity_levels, 
+            this.living_space_size, this.garden, this.allergenic, this.other_animals, this.fencing, this.experience_required, this.adopted, this.timestamp, this.dog_id]);
 
 
         if (response.rows[0]) {
