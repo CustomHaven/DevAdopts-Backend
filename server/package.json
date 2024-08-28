@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "aws-sdk": "^2.1684.0",
     "axios": "^1.7.5",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -20,5 +21,8 @@
     "jsonwebtoken": "^9.0.2",
     "node-nlp": "^4.27.0",
     "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }
