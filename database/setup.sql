@@ -42,9 +42,6 @@ CREATE TABLE preferences (
 CREATE TABLE dogs (
     dog_id INT GENERATED ALWAYS AS IDENTITY,
     dog_name VARCHAR(25) NOT NULL,
-    dog_initial_price INT NOT NULL,
-    dog_monthly_price INT NOT NULL,
-    dog_long_term_price INT NOT NULL,
     gender VARCHAR(10) NOT NULL,
     colour VARCHAR(25) NOT NULL,
     age INT NOT NULL,
@@ -59,14 +56,14 @@ CREATE TABLE dogs (
     other_animals BOOLEAN NOT NULL,
     fencing VARCHAR(5) NOT NULL, -- FEET
     experience_required BOOLEAN NOT NULL,
-    adopted BOOLEAN NOT NULL, -- still available
+    adopted BOOLEAN NOT NULL DEFAULT FALSE, -- still available
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (dog_id)
 );
 
 CREATE TABLE initial_adoption_cost (
     initial_id INT GENERATED ALWAYS AS IDENTITY,
-    price INT NOT NULL,
+    initial_price INT NOT NULL,
     neutered BOOLEAN NOT NULL,
     microchipped BOOLEAN NOT NULL,
     size_of_bed BOOLEAN NOT NULL,
@@ -80,9 +77,8 @@ CREATE TABLE initial_adoption_cost (
 
 CREATE TABLE monthly_adoption_cost (
     monthly_id INT GENERATED ALWAYS AS IDENTITY,
-    prices INT,
+    monthly_prices INT,
     amount_of_food INT NOT NULL, -- how much food would the owner spend on the dog
-
     pet_insurance INT,
     veterinary_care INT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
