@@ -5,7 +5,7 @@ let resultObject;
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-xdescribe("Dog Model", () => {
+describe("Dog Model", () => {
 
     beforeEach(() => {
         resultObject = {
@@ -31,6 +31,16 @@ xdescribe("Dog Model", () => {
         jest.clearAllMocks();
     });
 
+
+    describe("Constructor", () => {
+        it("should create a Dog instance with correct properties", () => {
+            const dog = new Dog(resultObject);
+            expect(dog.dog_id).toBe(resultObject.dog_id);
+            expect(dog.dog_name).toBe(resultObject.dog_name);
+            expect(dog.timestamp).toBe(datenow);
+            expect(dog).toEqual({ ...resultObject, timestamp: datenow });
+        });
+    });
 
     describe("getAll", () => {
         it("should return list of all dogs", async () => {
@@ -88,6 +98,20 @@ xdescribe("Dog Model", () => {
 
             // Alternatively, test with no arguments
             await expect(Dog.create({})).rejects.toThrow("One of the required fields missing");
+        });
+
+        it("throws if any required field is missing individually", async () => {
+            const requiredFields = [
+                "dog_name", "gender", "colour", "age", "size", "breed", "young_children_compatibility",
+                "small_animal_compatibility", "activity_levels", "living_space_size", "garden",
+                "allergenic", "other_animals", "fencing", "experience_required"
+            ];
+    
+            for (const field of requiredFields) {
+                const invalidData = { ...copyResultObject };
+                delete invalidData[field];
+                await expect(Dog.create(invalidData)).rejects.toThrow("One of the required fields missing");
+            }
         });
 
         it("resolves with a dog on successful creation", async () => {
