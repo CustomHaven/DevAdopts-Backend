@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS user_dog;
 DROP TABLE IF EXISTS initial_adoption_cost;
 DROP TABLE IF EXISTS monthly_adoption_cost;
 DROP TABLE IF EXISTS long_term_adoption_cost;
@@ -54,7 +55,7 @@ CREATE TABLE dogs (
     garden BOOLEAN NOT NULL,
     allergenic VARCHAR(10) NOT NULL, -- low medium high
     other_animals BOOLEAN NOT NULL,
-    fencing VARCHAR(5) NOT NULL, -- FEET
+    fencing VARCHAR(10) NOT NULL, -- FEET
     experience_required BOOLEAN NOT NULL,
     adopted BOOLEAN NOT NULL DEFAULT FALSE, -- still available
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -68,7 +69,7 @@ CREATE TABLE initial_adoption_cost (
     microchipped BOOLEAN NOT NULL,
     size_of_bed BOOLEAN NOT NULL,
     collar_leash BOOLEAN NOT NULL,
-    obediance_classes_needed BOOLEAN NOT NULL,
+    obedience_classes_needed BOOLEAN NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dog_id INT NOT NULL,
     PRIMARY KEY (initial_id),
@@ -77,7 +78,7 @@ CREATE TABLE initial_adoption_cost (
 
 CREATE TABLE monthly_adoption_cost (
     monthly_id INT GENERATED ALWAYS AS IDENTITY,
-    monthly_prices INT,
+    monthly_price INT,
     amount_of_food INT NOT NULL, -- how much food would the owner spend on the dog
     pet_insurance INT,
     veterinary_care INT NOT NULL,
@@ -91,6 +92,8 @@ CREATE TABLE long_term_adoption_cost (
     long_term_id INT GENERATED ALWAYS AS IDENTITY,
     major_medical_expenses INT NOT NULL,
     end_of_life INT NOT NULL,
+    dog_id INT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (long_term_id),
     FOREIGN KEY (dog_id) REFERENCES dogs(dog_id) ON DELETE CASCADE
 );
@@ -117,17 +120,18 @@ VALUES
 
 
 -- Insert data into preferences table
-INSERT INTO preferences (small_animals, young_children, activity, living_space_size, garden, allergy_information, other_animals, fencing, previous_experience_years, annual_income, user_id)
+INSERT INTO preferences (small_animals, young_children, activity, living_space_size, garden, allergy_information, 
+other_animals, fencing, previous_experience_years, annual_income, user_id)
 VALUES 
 (TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', 3, 60000, 1),
 (FALSE, TRUE, 'Medium', 'Small', TRUE, 'Medium', FALSE, '4', 1, 40000, 2),
-(TRUE, FALSE, 'Low', 'Medium', TRUE, 'High', TRUE, '5', 2, 50000, 3),
-(FALSE, TRUE, 'Medium', 'Medium', TRUE, 'Low', FALSE, '5', 2, 45000, 4);
+(TRUE, FALSE, 'Low', 'Medium', TRUE, 'High', TRUE, '5', 2, 50000, 1),
+(FALSE, TRUE, 'Medium', 'Medium', TRUE, 'Low', FALSE, '5', 2, 45000, 2);
 
 
 
 -- Insert data into dogs table
-INSERT INTO dogs (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, other_animals, fencing, experience_required, adopted)
+INSERT INTO dogs (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, other_animals, fencing, experience_required)
 VALUES 
 ('Max', 'Male', 'Brown', 4, 'Medium', 'Labrador Retriever', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', FALSE),
 ('Bella', 'Female', 'Black', 3, 'Small', 'Pomeranian', TRUE, FALSE, 'Medium', 'Small', TRUE, 'Medium', TRUE, '4', TRUE),
@@ -136,7 +140,7 @@ VALUES
 
 
 -- Insert data into initial_adoption_cost table
-INSERT INTO initial_adoption_cost (price, neutered, microchipped, size_of_bed, collar_leash, obediance_classes_needed, dog_id)
+INSERT INTO initial_adoption_cost (initial_price, neutered, microchipped, size_of_bed, collar_leash, obedience_classes_needed, dog_id)
 VALUES 
 (200, TRUE, TRUE, TRUE, TRUE, TRUE, 1),
 (150, TRUE, TRUE, TRUE, TRUE, FALSE, 2),
@@ -145,7 +149,7 @@ VALUES
 
 
 -- Insert data into monthly_adoption_cost table
-INSERT INTO monthly_adoption_cost (prices, amount_of_food, pet_insurance, veterinary_care, dog_id)
+INSERT INTO monthly_adoption_cost (monthly_price, amount_of_food, pet_insurance, veterinary_care, dog_id)
 VALUES 
 (50, 30, 20, 25, 1),
 (45, 20, 15, 20, 2),
@@ -166,3 +170,4 @@ INSERT INTO user_dog (user_id, dog_id, adoption_date)
 VALUES 
 (1, 2, '2024-02-20'),
 (2, 4, '2024-04-05');
+
