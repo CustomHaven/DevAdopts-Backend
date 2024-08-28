@@ -1,5 +1,5 @@
-const db = require("../../db/connect");
-const Dog = require("../../models/Dog");
+const db = require("../../../db/connect");
+const Dog = require("../../../models/Dog");
 
 let resultObject;
 const datetime = new Date();
