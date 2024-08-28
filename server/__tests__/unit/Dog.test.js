@@ -52,7 +52,7 @@ describe("Dog Model", () => {
 
             // Act
             const results = await Dog.getAll();
-            // console.log("first", results);
+
             // Assert
             expect(Dog).toBeDefined();
             expect(Dog.getAll).toBeDefined();
@@ -92,12 +92,12 @@ describe("Dog Model", () => {
 
         it("resolves with a dog on successful creation", async () => {
             // Arrange
-            const correctTime = resultObject.timestamp.toISOString().replace("T", " ").replace(/\..+/, "");
-            const mockResults = [
-                { ...resultObject, dog_id: 5, timestamp: correctTime }
+            const queryResult = [
+                { ...resultObject, dog_id: 5 }
             ];
+            const mockResult = { ...resultObject, dog_id: 5, timestamp: datenow };
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [] });
-            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: mockResults });
+            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: queryResult });
 
             // Act
             const result = await Dog.create(copyResultObject);
@@ -109,7 +109,7 @@ describe("Dog Model", () => {
 
 
             expect(db.query).toHaveBeenCalledTimes(2);
-            expect(result).toEqual(mockResults[0])
+            expect(result).toEqual(mockResult)
         });
 
         it("should throw an Error if dog already exists", async () => {
