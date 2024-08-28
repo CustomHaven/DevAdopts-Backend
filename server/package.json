@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "test": "jest --watchAll --verbose",
+    "pipeline-test": "jest --verbose > test.txt 2>&1",
+    "coverage": "jest --coverage",
+    "pipeline-coverage": "jest --coverage > coverage.txt 2>&1",
     "start": "node index.js",
-    "dev": "nodemon -L index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon index.js",
+    "setup-db": "node db/setup.js"
   },
   "keywords": [],
   "author": "",
