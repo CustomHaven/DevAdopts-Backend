@@ -19,7 +19,7 @@ class Dog {
         this.fencing = dog.fencing;
         this.experience_required = dog.experience_required;
         this.adopted = dog.adopted;
-        this.timestamp = dog.timestamp;
+        this.timestamp = (dog.timestamp instanceof Date ? dog.timestamp : new Date(dog.timestamp)).toISOString().replace(/T/, " ").replace(/\..+/, "");
     }
 
     static async getAll() {
@@ -31,7 +31,7 @@ class Dog {
     }
 
     static async show(id) {
-        const response = await db.query("SELECT * FROM dogs WHERE dog_id = $1", [id]);
+        const response = await db.query("SELECT * FROM dogs WHERE dog_id = $1;", [id]);
         if (response.rows.length !== 1) {
             throw new Error("No dog found");
         }
@@ -47,7 +47,7 @@ class Dog {
         }
 
         const existingDog = await db.query("SELECT * FROM dogs WHERE dog_id = $1", [dog_id]);
-        console.log("WHY", existingDog.rows)
+
         if (existingDog.rows.length === 0) {
             const response = await db.query(`INSERT INTO dogs 
                 (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, 
@@ -57,14 +57,14 @@ class Dog {
                     living_space_size, garden, allergenic, other_animals, fencing, experience_required]);
             return new Dog(response.rows[0]);
         }
-        console.log("first", existingDog.rows)
+
         throw new Error("Dog already exist");
     }
 
 
     async update(data) {
         for (const key of Object.keys(this)) {
-            if (key in data.dog_id && key !== "dog_id" && key in data.timestamp && key !== "timestamp") {
+            if (key !== "dog_id" && key !== "timestamp") {
                 this[key] = data[key];
             }
         }
