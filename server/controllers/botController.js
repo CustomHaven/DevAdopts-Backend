@@ -55,7 +55,7 @@ async function update(req, res) {
 async function create(req, res) {
     try {
         const data = req.body;
-        const newPreference = await Preference.create(data);
+        const newPreference = await Preference.create(data.user_id);
         res.status(201).json({ data: newPreference });
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -64,7 +64,7 @@ async function create(req, res) {
 
 async function destroy(req, res) {
     try {
-        const id = req.params.id;
+        const id = req.params.preference_id;
         const preference = await Preference.show(parseInt(id));
         await preference.destroy();
         res.sendStatus(204);

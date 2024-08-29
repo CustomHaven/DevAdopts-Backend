@@ -87,55 +87,6 @@ describe("Bot controller", () => {
         jest.clearAllMocks()
     });
 
-    describe("update", () => {
-        beforeEach(() => {
-            mockReq = {
-                params: { preference_id: 1 }, 
-                body: {
-                    small_animals: true
-                }
-            };
-        });
-
-        it("should update a result with status code 200", async () => {
-            // Arrange
-            // const goatsData = await Goat.getAll()
-            
-            jest.spyOn(Preference, "show").mockResolvedValueOnce(new Preference(createObject));        
-            jest.spyOn(Preference.prototype, "update").mockResolvedValueOnce({ ...createObject, small_animals: true, });
-            // Act
-            // goatToUpdate = new Goat({ name: "test result", age: 23, id: 1 });
-            // const result = await goatToUpdate.update(mockReq, mockRes);
-            await botController.update(mockReq, mockRes);
-
-            // Assert
-            // get correct status code and the correct data
-            expect(Preference.show).toHaveBeenCalledTimes(1);
-            expect(Preference.show).toHaveBeenCalledWith(1);
-            expect(Preference.prototype.update).toHaveBeenCalledTimes(1);
-            expect(Preference.prototype.update).toHaveBeenCalledWith(Object.keys(mockReq.body)[0], Object.values(mockReq.body)[0]);
-            expect(mockStatus).toHaveBeenCalledWith(200);
-            expect(mockJson).toHaveBeenCalledWith({ data: { ...createObject, small_animals: true } });
-        });
-
-        it("should return an error upon failure by id", async () => {
-            // Arrange
-            jest.spyOn(Preference, "show").mockRejectedValue(new Error("Something happened to your DB"));
-
-            // Act
-            await botController.update(mockReq, mockRes);
-
-            // Assert
-            // get correct status code and the correct data
-            expect(Preference.show).toHaveBeenCalledTimes(1);
-            expect(Preference.prototype.update).toHaveBeenCalledTimes(0);
-            expect(mockStatus).toHaveBeenCalledWith(400);
-            expect(mockJson).toHaveBeenCalledWith({ error: "Something happened to your DB" });
-        });
-
-    });
-
-
     describe("interactWithAI", () => {
         let requiredKeys, objectToFeed;
         beforeEach(() => {
@@ -156,7 +107,6 @@ describe("Bot controller", () => {
             }
         });
 
-        // AS I AM STILL WRITING THIS TEST WHY IS THE TEST IN THE UPDATE FAILING? BEL
         it("AI will ask question to the user and status code 200", async () => {
             // Arrange
 
@@ -223,7 +173,156 @@ describe("Bot controller", () => {
             expect(mockStatus).toHaveBeenCalledWith(400);
             expect(mockJson).toHaveBeenCalledWith({ error: "The external API failed" });
         });
+    });
 
-    })
+    describe("update", () => {
+        beforeEach(() => {
+            mockReq = {
+                params: { preference_id: 1 }, 
+                body: {
+                    small_animals: true
+                }
+            };
+        });
 
+        it("should update a result with status code 200", async () => {
+            // Arrange
+            jest.spyOn(Preference, "show").mockResolvedValueOnce(new Preference(createObject));        
+            jest.spyOn(Preference.prototype, "update").mockResolvedValueOnce({ ...createObject, small_animals: true, });
+            // Act
+            await botController.update(mockReq, mockRes);
+
+            // Assert
+            // get correct status code and the correct data
+            expect(Preference.show).toHaveBeenCalledTimes(1);
+            expect(Preference.show).toHaveBeenCalledWith(1);
+            expect(Preference.prototype.update).toHaveBeenCalledTimes(1);
+            expect(Preference.prototype.update).toHaveBeenCalledWith(Object.keys(mockReq.body)[0], Object.values(mockReq.body)[0]);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+            expect(mockJson).toHaveBeenCalledWith({ data: { ...createObject, small_animals: true } });
+        });
+
+        it("should return an error upon failure by id", async () => {
+            // Arrange
+            jest.spyOn(Preference, "show").mockRejectedValue(new Error("Something happened to your DB"));
+
+            // Act
+            await botController.update(mockReq, mockRes);
+
+            // Assert
+            expect(Preference.show).toHaveBeenCalledTimes(1);
+            expect(Preference.prototype.update).toHaveBeenCalledTimes(0);
+            expect(mockStatus).toHaveBeenCalledWith(400);
+            expect(mockJson).toHaveBeenCalledWith({ error: "Something happened to your DB" });
+        });
+    });
+
+    describe("create", () => {
+        let mockReq;
+        beforeEach(() => {
+            delete resultObject.dog_id;
+            mockReq = {
+                body: {
+                    user_id: 1
+                }
+            };
+        });
+
+        it("should create a preference with status code 201", async () => {
+            // Arrange
+            // const goatsData = await Goat.getAll()
+            jest.spyOn(Preference, "create").mockResolvedValueOnce({ ...createObject });
+
+            // Act
+            await botController.create(mockReq, mockRes);
+
+            // Assert
+            // get correct status code and the correct data
+            expect(Preference.create).toHaveBeenCalledTimes(1);
+            expect(Preference.create).toHaveBeenCalledWith(1);
+            expect(mockStatus).toHaveBeenCalledWith(201);
+            expect(mockJson).toHaveBeenCalledWith({ data: { ...createObject } });
+        });
+
+        it("should return an error upon failure", async () => {
+            // Arrange
+            // const goatsData = await Goat.getAll()
+            jest.spyOn(Preference, "create").mockRejectedValue(new Error("Something happened to your DB"));
+
+            // Act
+            await botController.create(mockReq, mockRes);
+
+            // Assert
+            // get correct status code and the correct data
+            expect(Preference.create).toHaveBeenCalledTimes(1);
+            expect(Preference.create).toHaveBeenCalledWith(mockReq.body.user_id);
+            expect(mockStatus).toHaveBeenCalledWith(400);
+            expect(mockJson).toHaveBeenCalledWith({ error: "Something happened to your DB" });
+        });
+    });
+
+
+    describe("destroy", () => {
+        let mockReq;
+        beforeEach(() => {
+            mockReq = {
+                params: { preference_id: 5 }, 
+            };
+        });
+
+        it("should destroy a preference with status code 204", async () => {
+            // Arrange
+            jest.spyOn(Preference, "show").mockResolvedValueOnce(new Preference({ ...resultObject, preference_id: 5 }));        
+            jest.spyOn(Preference.prototype, "destroy").mockResolvedValueOnce({});
+
+
+            // Act
+            await botController.destroy(mockReq, mockRes);
+
+            // Assert
+            // get correct status code and the correct data
+            expect(Preference.show).toHaveBeenCalledTimes(1);
+            expect(Preference.show).toHaveBeenCalledWith(5);
+            expect(Preference.prototype.destroy).toHaveBeenCalledTimes(1);
+            expect(Preference.prototype.destroy).toHaveBeenCalledWith();
+            expect(mockSendStatus).toHaveBeenCalledWith(204);
+            expect(mockJson).toHaveBeenCalledTimes(0);
+        });
+
+        it("should return an error upon failure with no given id", async () => {
+            // Arrange
+            jest.spyOn(Preference, "show").mockRejectedValue(new Error("Something happened to your DB"));
+
+            // Act
+            await botController.destroy(mockReq, mockRes);
+
+            // Assert
+            // get correct status code and the correct data
+            expect(Preference.show).toHaveBeenCalledTimes(1);
+            expect(Preference.show).toHaveBeenCalledWith(mockReq.params.preference_id);
+            expect(Preference.prototype.destroy).toHaveBeenCalledTimes(0);
+            expect(mockStatus).toHaveBeenCalledWith(404);
+            expect(mockJson).toHaveBeenCalledWith({ error: "Something happened to your DB" });
+        });
+
+        it("should return an error upon failure on destroy method", async () => {
+            // Arrange
+            // const goatsData = await Goat.getAll()
+            jest.spyOn(Preference, "show").mockResolvedValueOnce(new Preference(resultObject));        
+            jest.spyOn(Preference.prototype, "destroy").mockRejectedValue(new Error("Something happened to your DB"));
+
+            // Act
+            await botController.destroy(mockReq, mockRes);
+
+            // Assert
+            // get correct status code and the correct data
+            expect(Preference.show).toHaveBeenCalledTimes(1);
+            expect(Preference.show).toHaveBeenCalledWith(5);
+            expect(Preference.prototype.destroy).toHaveBeenCalledTimes(1);
+            expect(Preference.prototype.destroy).toHaveBeenCalledWith();
+            expect(mockStatus).toHaveBeenCalledWith(404);
+            expect(mockJson).toHaveBeenCalledWith({ error: "Something happened to your DB" });
+        });
+
+    });
 });
