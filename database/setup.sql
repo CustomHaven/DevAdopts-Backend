@@ -22,15 +22,15 @@ CREATE TABLE users (
 
 CREATE TABLE preferences (
     preference_id INT GENERATED ALWAYS AS IDENTITY,
-    small_animals TEXT NOT NULL,
-    young_children TEXT NOT NULL,
-    activity TEXT NOT NULL, -- low, medium high
-    living_space_size TEXT NOT NULL,
-    garden TEXT NOT NULL,
-    allergy_information TEXT NOT NULL,
-    other_animals TEXT NOT NULL,
-    fencing TEXT NOT NULL, -- FEET
-    previous_experience_years TEXT NOT NULL,
+    small_animals TEXT,
+    young_children TEXT,
+    activity TEXT, -- low, medium high
+    living_space_size TEXT,
+    garden TEXT,
+    allergy_information TEXT,
+    other_animals TEXT,
+    fencing TEXT, -- FEET
+    previous_experience_years TEXT,
     annual_income TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id INT NOT NULL,
@@ -136,12 +136,12 @@ VALUES
 
 
 -- Insert data into dogs table
-INSERT INTO dogs (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, other_animals, fencing, experience_required)
+INSERT INTO dogs (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, other_animals, fencing, experience_required, shelter_location_postcode, photo)
 VALUES 
-('Max', 'Male', 'Brown', 4, 'Medium', 'Labrador Retriever', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', FALSE),
-('Bella', 'Female', 'Black', 3, 'Small', 'Pomeranian', TRUE, FALSE, 'Medium', 'Small', TRUE, 'Medium', TRUE, '4', TRUE),
-('Charlie', 'Male', 'White', 5, 'Large', 'German Shepherd', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '8', FALSE),
-('Luna', 'Female', 'Gray', 2, 'Medium', 'Siberian Husky', FALSE, TRUE, 'Medium', 'Medium', TRUE, 'Medium', FALSE, '5', TRUE);
+('Max', 'Male', 'Brown', 4, 'Medium', 'Labrador Retriever', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', FALSE, 'E1 7QX', 'https://images.unsplash.com/photo-1537204696486-967f1b7198c8'),
+('Bella', 'Female', 'Black', 3, 'Small', 'Pomeranian', TRUE, FALSE, 'Medium', 'Small', TRUE, 'Medium', TRUE, '4', TRUE, 'M1 2EH', 'https://plus.unsplash.com/premium_photo-1719177518277-9bf8126b277d'),
+('Charlie', 'Male', 'White', 5, 'Large', 'German Shepherd', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '8', FALSE, 'BS1 2LZ', 'https://images.unsplash.com/photo-1649923625148-1e13d9431053'),
+('Luna', 'Female', 'Gray', 2, 'Medium', 'Siberian Husky', FALSE, TRUE, 'Medium', 'Medium', TRUE, 'Medium', FALSE, '5', TRUE, 'B5 4HU', 'https://plus.unsplash.com/premium_photo-1668208363137-7ebc4ce6b7b7');
 
 
 -- Insert data into initial_adoption_cost table
