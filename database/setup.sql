@@ -57,6 +57,8 @@ CREATE TABLE dogs (
     other_animals BOOLEAN NOT NULL,
     fencing VARCHAR(10) NOT NULL, -- FEET
     experience_required BOOLEAN NOT NULL,
+    photo TEXT NOT NULL,
+    shelter_location_postcode VARCHAR(25) NOT NULL,
     adopted BOOLEAN NOT NULL DEFAULT FALSE, -- still available
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (dog_id)
@@ -173,9 +175,3 @@ INSERT INTO user_dog (user_id, dog_id, adoption_date)
 VALUES 
 (1, 2, '2024-02-20'),
 (2, 4, '2024-04-05');
-
--- insert into bed_size (bed_size_id, bed_size, bed_price)
--- values
--- (1, 'small', 25)
--- (2, 'medium', 30)
--- (3, 'large', 35)

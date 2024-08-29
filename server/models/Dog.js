@@ -18,16 +18,18 @@ class Dog {
         this.other_animals = dog.other_animals;
         this.fencing = dog.fencing;
         this.experience_required = dog.experience_required;
+        this.photo = dog.photo;
+        this.shelter_location_postcode = dog.shelter_location_postcode;
         this.adopted = dog.adopted;
         this.timestamp = (dog.timestamp instanceof Date ? dog.timestamp : new Date(dog.timestamp)).toISOString().replace(/T/, " ").replace(/\..+/, "");
     }
 
     static async getAll() {
-        const users = await db.query("SELECT * FROM dogs");
-        if (users.rows.length === 0) {
+        const dog = await db.query("SELECT * FROM dogs");
+        if (dog.rows.length === 0) {
             throw new Error("No dogs available");
         }
-        return users.rows.map(b => new Dog(b))
+        return dog.rows.map(b => new Dog(b))
     }
 
     static async show(id) {
