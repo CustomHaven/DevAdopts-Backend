@@ -39,11 +39,19 @@ class Dog {
     }
 
     static async create(data) {
+
         const { dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels,
             living_space_size, garden, allergenic, other_animals, fencing, experience_required, dog_id } = data;
-        if (!dog_name || !gender || !colour || !age || !size || !breed || !young_children_compatibility || !small_animal_compatibility || !activity_levels || 
-            !living_space_size || !garden || !allergenic || !other_animals || !fencing || !experience_required ) {
-            throw new Error("One of the required fields missing.");
+
+        // Check for missing fields
+        const missingFields = [
+            "dog_name", "gender", "colour", "age", "size", "breed",
+            "young_children_compatibility", "small_animal_compatibility", "activity_levels",
+            "living_space_size", "garden", "allergenic", "other_animals", "fencing", "experience_required"
+        ].filter(field => data[field] === undefined || data[field] === null);
+
+        if (missingFields.length > 0) {
+            throw new Error("At least one of the required fields is missing");
         }
 
         const existingDog = await db.query("SELECT * FROM dogs WHERE dog_id = $1", [dog_id]);

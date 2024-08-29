@@ -5,7 +5,7 @@ const logger = require('./middleware/logger');
 const authenticator = require("./middleware/authenticator")
 
 const usersRouter = require('./routers/userRouter');
-const dogsRouter = require("./routers/dogsRouters")
+const dogsRouter = require("./routers/dogsRouters");
 
 const app = express();
 
@@ -27,8 +27,7 @@ app.get("/hello", authenticator, (req, res) => {
     res.status(200).json({ message: 'Authenticated' });
 })
 
-
-app.use("/users", usersRouter);
 app.use("/dogs", dogsRouter);
+app.use("/users", usersRouter);
 
 module.exports = app;

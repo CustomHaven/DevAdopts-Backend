@@ -30,5 +30,11 @@
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "./__tests__/integration/config.js",
+      "./__tests__/integration/resultHelper.js"
+    ]
   }
 }
