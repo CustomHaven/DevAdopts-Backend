@@ -22,16 +22,16 @@ CREATE TABLE users (
 
 CREATE TABLE preferences (
     preference_id INT GENERATED ALWAYS AS IDENTITY,
-    small_animals BOOLEAN NOT NULL,
-    young_children BOOLEAN NOT NULL,
-    activity VARCHAR(10) NOT NULL, -- low, medium high
-    living_space_size VARCHAR(50) NOT NULL,
-    garden BOOLEAN NOT NULL,
-    allergy_information VARCHAR(10) NOT NULL,
-    other_animals BOOLEAN NOT NULL,
-    fencing VARCHAR(10) NOT NULL, -- FEET
-    previous_experience_years INT NOT NULL,
-    annual_income INT,
+    small_animals TEXT NOT NULL,
+    young_children TEXT NOT NULL,
+    activity TEXT NOT NULL, -- low, medium high
+    living_space_size TEXT NOT NULL,
+    garden TEXT NOT NULL,
+    allergy_information TEXT NOT NULL,
+    other_animals TEXT NOT NULL,
+    fencing TEXT NOT NULL, -- FEET
+    previous_experience_years TEXT NOT NULL,
+    annual_income TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id INT NOT NULL,
     PRIMARY KEY (preference_id),
