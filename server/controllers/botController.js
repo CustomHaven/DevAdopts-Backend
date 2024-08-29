@@ -1,30 +1,15 @@
-const openai = require("../services/openaiSetup");
 const Preference = require("../models/Preference");
+const openai = require("../services/openaiSetup");
+const { updateWhatToAsk, whatToAsk } = require("../utils/chatGPTHelper");
 
 async function interactWithAI(req, res) {
     try {
         const requiredKeys = [
             "small_animals", "young_children", "activity", "living_space_size", "garden", "allergy_information", "other_animals", "fencing", "previous_experience_years", "annual_income"
         ]
-        const whatToAsk = `
-        Please just ask me straight away dont start off with Sure lets get started or something similar! Ask me question around these things 1 by 1:
-        
-            small_animals BOOLEAN NOT NULL,
-            young_children BOOLEAN NOT NULL,
-            activity VARCHAR(10) NOT NULL, -- low, medium high
-            living_space_size VARCHAR(50) NOT NULL,
-            garden BOOLEAN NOT NULL,
-            allergy_information VARCHAR(10) NOT NULL,
-            other_animals BOOLEAN NOT NULL,
-            fencing VARCHAR(10) NOT NULL, -- FEET
-            previous_experience_years INT NOT NULL,
-            annual_income INT
-        
-            When done gather all the information and tell me what 5 dog breed you would recommend for me.
-        `
 
-        const id = req.params.id;
-        const data = req.body;
+        const id = req.params.preference_id;
+
         const preference = await Preference.show(parseInt(id));
 
         const refinedObj = [preference].map(preference => {
@@ -36,14 +21,28 @@ async function interactWithAI(req, res) {
             }
             return finalObject;
         })[0];
-    } catch {
+
+        const updateQuestion = updateWhatToAsk(whatToAsk, requiredKeys, refinedObj);
+
+        if (updateQuestion.count === 10) {
+            updateQuestion.question += JSON.stringify(refinedObj);
+        }
+
+        const gptResponse = await openai.chat.completions.create({
+            message: [{ "role": "assistant", "content": updateQuestion.question }],
+            model: "gpt-4o-mini"
+        });
+
+        res.status(200).json({ data: { answer: gptResponse.data.choices[0].message.content } });
+
+    } catch (error) {
         res.status(400).json({ error: error.message });
     }
 }
 
 async function update(req, res) {
     try {
-        const id = req.params.id;
+        const id = req.params.preference_id;
         const data = req.body;
         const preference = await Preference.show(parseInt(id));
         const updatePrefernce = await preference.update(Object.keys(data)[0], Object.values(data)[0]);
