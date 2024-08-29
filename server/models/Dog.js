@@ -43,7 +43,7 @@ class Dog {
     static async create(data) {
 
         const { dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels,
-            living_space_size, garden, allergenic, other_animals, fencing, experience_required, dog_id } = data;
+            living_space_size, garden, allergenic, other_animals, fencing, experience_required, dog_id, photo, shelter_location_postcode } = data;
 
         // Check for missing fields
         const missingFields = [
@@ -61,10 +61,10 @@ class Dog {
         if (existingDog.rows.length === 0) {
             const response = await db.query(`INSERT INTO dogs 
                 (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, 
-                living_space_size, garden, allergenic, other_animals, fencing, experience_required)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *`, 
+                living_space_size, garden, allergenic, other_animals, fencing, experience_required, photo, shelter_location_postcode)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING *`, 
                 [dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, 
-                    living_space_size, garden, allergenic, other_animals, fencing, experience_required]);
+                    living_space_size, garden, allergenic, other_animals, fencing, experience_required, photo, shelter_location_postcode]);
             return new Dog(response.rows[0]);
         }
 
@@ -84,11 +84,13 @@ class Dog {
         const response = await db.query(`UPDATE dogs
                                             SET dog_name = $1, gender = $2, colour = $3, age = $4, size = $5, breed = $6, young_children_compatibility = $7, 
                                             small_animal_compatibility = $8, activity_levels = $9, living_space_size = $10, garden = $11, allergenic = $12,
-                                            other_animals = $13, fencing = $14, experience_required = $15, adopted = $16, timestamp = $17
-                                            WHERE dog_id = $18
+                                            other_animals = $13, fencing = $14, experience_required = $15, adopted = $16, timestamp = $17, photo = $18, 
+                                            shelter_location_postcode = $19
+                                            WHERE dog_id = $20
                                             RETURNING *`, 
-            [this.dog_name, this.gender, this.colour, this.age, this.size, this.breed, this.young_children_compatibility, this.small_animal_compatibility, this.activity_levels, 
-            this.living_space_size, this.garden, this.allergenic, this.other_animals, this.fencing, this.experience_required, this.adopted, this.timestamp, this.dog_id]);
+            [this.dog_name, this.gender, this.colour, this.age, this.size, this.breed, this.young_children_compatibility, this.small_animal_compatibility, 
+            this.activity_levels, this.living_space_size, this.garden, this.allergenic,  this.other_animals, this.fencing, this.experience_required, 
+            this.adopted, this.timestamp, this.photo, this.shelter_location_postcode, this.dog_id]);
 
 
         if (response.rows[0]) {
