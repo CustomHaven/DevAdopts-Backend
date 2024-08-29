@@ -89,15 +89,15 @@ describe("Dog Model", () => {
         it("throws if crucial input keys are missing", async () => {
             delete copyResultObject.breed;
             // Test with missing key breed
-            await expect(Dog.create(copyResultObject)).rejects.toThrow("One of the required fields missing");
+            await expect(Dog.create(copyResultObject)).rejects.toThrow("At least one of the required fields is missing");
             delete copyResultObject.question_id;
 
             // Alternatively, test with missing key breed and size
             delete copyResultObject.size;
-            await expect(Dog.create(copyResultObject)).rejects.toThrow("One of the required fields missing");
+            await expect(Dog.create(copyResultObject)).rejects.toThrow("At least one of the required fields is missing");
 
             // Alternatively, test with no arguments
-            await expect(Dog.create({})).rejects.toThrow("One of the required fields missing");
+            await expect(Dog.create({})).rejects.toThrow("At least one of the required fields is missing");
         });
 
         it("throws if any required field is missing individually", async () => {
@@ -110,7 +110,7 @@ describe("Dog Model", () => {
             for (const field of requiredFields) {
                 const invalidData = { ...copyResultObject };
                 delete invalidData[field];
-                await expect(Dog.create(invalidData)).rejects.toThrow("One of the required fields missing");
+                await expect(Dog.create(invalidData)).rejects.toThrow("At least one of the required fields is missing");
             }
         });
 
