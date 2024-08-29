@@ -22,15 +22,15 @@ CREATE TABLE users (
 
 CREATE TABLE preferences (
     preference_id INT GENERATED ALWAYS AS IDENTITY,
-    small_animals TEXT NOT NULL,
-    young_children TEXT NOT NULL,
-    activity TEXT NOT NULL, -- low, medium high
-    living_space_size TEXT NOT NULL,
-    garden TEXT NOT NULL,
-    allergy_information TEXT NOT NULL,
-    other_animals TEXT NOT NULL,
-    fencing TEXT NOT NULL, -- FEET
-    previous_experience_years TEXT NOT NULL,
+    small_animals TEXT,
+    young_children TEXT,
+    activity TEXT, -- low, medium high
+    living_space_size TEXT,
+    garden TEXT,
+    allergy_information TEXT,
+    other_animals TEXT,
+    fencing TEXT, -- FEET
+    previous_experience_years TEXT,
     annual_income TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id INT NOT NULL,
