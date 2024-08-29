@@ -1,6 +1,12 @@
 const botController = require("../../../controllers/botController");
 const Preference = require("../../../models/Preference");
-const OpenAIApi = require("openai");
+const openai = require("../../../services/openaiSetup");
+const { updateWhatToAsk, whatToAsk } = require("../../../utils/chatGPTHelper");
+
+
+jest.mock("../../../utils/chatGPTHelper", () => ({
+    updateWhatToAsk: jest.fn()
+}));
 
 jest.mock("openai", () => {
     return jest.fn().mockImplementation(() => {
@@ -25,12 +31,12 @@ const mockStatus = jest.fn(() => ({
 }));
 
 const mockRes = { status: mockStatus, sendStatus: mockSendStatus };
-let AIQuestions, resultObject; 
-let createObject, openai;
+let AIQuestions, resultObject, predefinedAnswers, mockReq;
+let createObject;
 const datetime = new Date();
+const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-
-describe("Dogs controller", () => {
+describe("Bot controller", () => {
     beforeEach(() => {
         AIQuestions = [
             { small_animals: "1. Do you have any small animals at home? (e.g., hamsters, rabbits, etc.)" },
@@ -44,6 +50,9 @@ describe("Dogs controller", () => {
             { previous_experience_years: "9. How many years of experience do you have with caring for animals?" },
             { annual_income: "10. What is your annual income?" }
         ];
+        predefinedAnswers = [ 
+            true, true, "high", "large", true, "mild", "yes", "5", 3, 20000
+        ]
         resultObject = {
             preference_id: 1,
             small_animals: true,
@@ -74,29 +83,14 @@ describe("Dogs controller", () => {
             timestamp: datetime,
             user_id: 1
         };
-        openai = new OpenAIApi();
+        // openai = new OpenAIApi();
         jest.clearAllMocks()
     });
 
-    describe("interactWithAI", () => {
-        let requiredKeys;
-        beforeEach(() => {
-            requiredKeys = [
-                "small_animals", "young_children", "activity", "living_space_size", "garden", "allergy_information", "other_animals", "fencing", "previous_experience_years", "annual_income"
-            ];
-        });
-
-        it("AI will ask question to the user and status code 200", () => {
-            
-        })
-    })
-
-
     describe("update", () => {
-        let mockReq;
         beforeEach(() => {
             mockReq = {
-                params: { id: 1 }, 
+                params: { preference_id: 1 }, 
                 body: {
                     small_animals: true
                 }
@@ -109,8 +103,6 @@ describe("Dogs controller", () => {
             
             jest.spyOn(Preference, "show").mockResolvedValueOnce(new Preference(createObject));        
             jest.spyOn(Preference.prototype, "update").mockResolvedValueOnce({ ...createObject, small_animals: true, });
-
-            console.log("mockReq.body)[0]", mockReq.body);
             // Act
             // goatToUpdate = new Goat({ name: "test result", age: 23, id: 1 });
             // const result = await goatToUpdate.update(mockReq, mockRes);
@@ -128,7 +120,6 @@ describe("Dogs controller", () => {
 
         it("should return an error upon failure by id", async () => {
             // Arrange
-            // const goatsData = await Goat.getAll()
             jest.spyOn(Preference, "show").mockRejectedValue(new Error("Something happened to your DB"));
 
             // Act
@@ -143,5 +134,96 @@ describe("Dogs controller", () => {
         });
 
     });
+
+
+    describe("interactWithAI", () => {
+        let requiredKeys, objectToFeed;
+        beforeEach(() => {
+                mockReq = {
+                    params: { id: 1 }, 
+                    body: {
+                        small_animals: true
+                    }
+                };
+            requiredKeys = [
+                "small_animals", "young_children", "activity", "living_space_size", "garden", "allergy_information", "other_animals", "fencing", "previous_experience_years", "annual_income"
+            ];
+            objectToFeed = {
+                preference_id: 1,
+                // small_animals: true,
+                timestamp: datenow,
+                user_id: 1
+            }
+        });
+
+        // AS I AM STILL WRITING THIS TEST WHY IS THE TEST IN THE UPDATE FAILING? BEL
+        it("AI will ask question to the user and status code 200", async () => {
+            // Arrange
+
+            // Act
+            jest.spyOn(Preference, "show").mockResolvedValueOnce(new Preference(createObject));
+
+            updateWhatToAsk.mockReturnValue({ question: whatToAsk, count: 3 });
+
+            openai.chat.completions.create.mockResolvedValueOnce({
+                data: {
+                    choices: [
+                        {
+                            index: 0,
+                            message: {
+                                role: "assistant",
+                                content: "Do you have any small animals at home? (yes/no)",
+                            },
+                            logprobs: null,
+                            finish_reason: "stop"
+                        }
+                    ]
+                }
+            });
+
+            await botController.interactWithAI(mockReq, mockRes);
+
+            // Assert
+            expect(Preference.show).toHaveBeenCalledTimes(1);
+            expect(updateWhatToAsk).toHaveBeenCalledTimes(1);
+            expect(updateWhatToAsk).toHaveBeenCalledWith(whatToAsk, requiredKeys, objectToFeed);
+            expect(openai.chat.completions.create).toHaveBeenCalledTimes(1);
+
+            expect(mockStatus).toHaveBeenCalledWith(200);
+            expect(mockJson).toHaveBeenCalledWith({ data: { answer: "Do you have any small animals at home? (yes/no)" } });
+        });
+
+        it("should throw upon failure in finding preference_id", async () => {
+            // Arrange
+            jest.spyOn(Preference, "show").mockRejectedValue(new Error("Something happened to your DB"));
+            // Act
+            await botController.interactWithAI(mockReq, mockRes);
+
+            // Assert
+            // get correct status code and the correct data
+            expect(Preference.show).toHaveBeenCalledTimes(1);
+            expect(updateWhatToAsk).toHaveBeenCalledTimes(0);
+            expect(openai.chat.completions.create).toHaveBeenCalledTimes(0);
+            expect(mockStatus).toHaveBeenCalledWith(400);
+            expect(mockJson).toHaveBeenCalledWith({ error: "Something happened to your DB" });
+        });
+
+        it("should throw if api does not respond or fails", async () => {
+            // Arrange
+            jest.spyOn(Preference, "show").mockResolvedValueOnce(new Preference(createObject));
+            openai.chat.completions.create.mockRejectedValue(new Error("The external API failed"))
+            // Act
+            await botController.interactWithAI(mockReq, mockRes);
+
+            // Assert
+            // get correct status code and the correct data
+            expect(Preference.show).toHaveBeenCalledTimes(1);
+            expect(updateWhatToAsk).toHaveBeenCalledTimes(1);
+            expect(openai.chat.completions.create).toHaveBeenCalledTimes(1);
+            expect(mockStatus).toHaveBeenCalledWith(400);
+            expect(mockJson).toHaveBeenCalledWith({ error: "The external API failed" });
+        });
+
+    })
 
 });
