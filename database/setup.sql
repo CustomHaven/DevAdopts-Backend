@@ -67,13 +67,16 @@ CREATE TABLE initial_adoption_cost (
     initial_price INT NOT NULL,
     neutered BOOLEAN NOT NULL,
     microchipped BOOLEAN NOT NULL,
-    size_of_bed BOOLEAN NOT NULL,
+    -- size_of_bed BOOLEAN NOT NULL,
+    bed_size_price INT NOT NULL, --25 , 30 ,35
+    -- bed_size_id INT NOT NULL,
     collar_leash BOOLEAN NOT NULL,
     obedience_classes_needed BOOLEAN NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     dog_id INT NOT NULL,
     PRIMARY KEY (initial_id),
     FOREIGN KEY (dog_id) REFERENCES dogs(dog_id) ON DELETE CASCADE
+    -- FOREIGN KEY (bed_size_id) REFERENCES bed_size(bed_size_id)
 );
 
 CREATE TABLE monthly_adoption_cost (
@@ -140,12 +143,12 @@ VALUES
 
 
 -- Insert data into initial_adoption_cost table
-INSERT INTO initial_adoption_cost (initial_price, neutered, microchipped, size_of_bed, collar_leash, obedience_classes_needed, dog_id)
+INSERT INTO initial_adoption_cost (initial_price, neutered, microchipped, bed_size_price, collar_leash, obedience_classes_needed, dog_id)
 VALUES 
-(200, TRUE, TRUE, TRUE, TRUE, TRUE, 1),
-(150, TRUE, TRUE, TRUE, TRUE, FALSE, 2),
-(300, TRUE, TRUE, TRUE, TRUE, TRUE, 3),
-(180, TRUE, TRUE, TRUE, TRUE, TRUE, 4);
+(200, TRUE, TRUE, 30, TRUE, TRUE, 1),
+(150, TRUE, TRUE, 25, TRUE, FALSE, 2),
+(300, TRUE, TRUE, 35, TRUE, TRUE, 3),
+(180, TRUE, TRUE, 30, TRUE, TRUE, 4);
 
 
 -- Insert data into monthly_adoption_cost table
@@ -171,3 +174,8 @@ VALUES
 (1, 2, '2024-02-20'),
 (2, 4, '2024-04-05');
 
+-- insert into bed_size (bed_size_id, bed_size, bed_price)
+-- values
+-- (1, 'small', 25)
+-- (2, 'medium', 30)
+-- (3, 'large', 35)

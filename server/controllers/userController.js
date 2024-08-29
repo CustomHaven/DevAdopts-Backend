@@ -21,12 +21,12 @@ async function register(req, res) {
 async function login(req, res) {
   const data = req.body;
   try {
-    const user = await User.getOneByUsername(data.username);
+    const user = await User.getOneByEmail(data.email);
 
     const match = await bcrypt.compare(data.password, user.password);
 
     if (match) {
-      const payload = { username: user.username, userId: user.id };
+      const payload = { username: user.email, userId: user.id };
       const sendToken = (err, token) => {
         if (err) {
           throw new Error("Error in token generation");
@@ -51,7 +51,18 @@ async function login(req, res) {
   }
 }
 
+async function show(req, res) {
+  try {
+    const id = req.params.id;
+    const user = await User.show(parseInt(id));
+    res.status(200).json({ data: user });
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+}
+
 module.exports = {
   register,
   login,
+  show,
 };

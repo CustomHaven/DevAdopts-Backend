@@ -11,7 +11,7 @@ class User {
     post_code,
     admin,
   }) {
-    this.id = user_id;
+    this.user_id = user_id;
     this.first_name = first_name;
     this.last_name = last_name;
     this.email = email;
@@ -20,9 +20,9 @@ class User {
     this.post_code = post_code;
     this.admin = admin;
   }
-  static async getOneByUsername(username) {
-    const response = await db.query("SELECT * FROM users WHERE username = $1", [
-      username,
+  static async getOneByEmail(email) {
+    const response = await db.query("SELECT * FROM users WHERE email = $1", [
+      email,
     ]);
     if (response.rows.length != 1) {
       throw new Error("Unable to locate user.");
@@ -46,6 +46,16 @@ class User {
     );
     if (response.rows.length !== 1) {
       throw new Error(" Result entry already exists.");
+    }
+    return new User(response.rows[0]);
+  }
+
+  static async getOneById(id) {
+    const response = await db.query("SELECT * FROM users WHERE user_id = $1;", [
+      id,
+    ]);
+    if (response.rows.length !== 1) {
+      throw new Error("No user found");
     }
     return new User(response.rows[0]);
   }
