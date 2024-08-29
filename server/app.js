@@ -6,6 +6,7 @@ const authenticator = require("./middleware/authenticator")
 
 const usersRouter = require('./routers/userRouter');
 const dogsRouter = require("./routers/dogsRouters");
+const botRouter = require("./routers/botRouters.js");
 
 const app = express();
 
@@ -29,5 +30,6 @@ app.get("/hello", authenticator, (req, res) => {
 
 app.use("/dogs", dogsRouter);
 app.use("/users", usersRouter);
+app.use("/bot/preferences", botRouter);
 
 module.exports = app;
