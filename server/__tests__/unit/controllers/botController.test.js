@@ -116,19 +116,17 @@ describe("Bot controller", () => {
             updateWhatToAsk.mockReturnValue({ question: whatToAsk, count: 3 });
 
             openai.chat.completions.create.mockResolvedValueOnce({
-                data: {
-                    choices: [
-                        {
-                            index: 0,
-                            message: {
-                                role: "assistant",
-                                content: "Do you have any small animals at home? (yes/no)",
-                            },
-                            logprobs: null,
-                            finish_reason: "stop"
-                        }
-                    ]
-                }
+                choices: [
+                    {
+                        index: 0,
+                        message: {
+                            role: "assistant",
+                            content: "Do you have any small animals at home? (yes/no)",
+                        },
+                        logprobs: null,
+                        finish_reason: "stop"
+                    }
+                ]
             });
 
             await botController.interactWithAI(mockReq, mockRes);

@@ -1,5 +1,6 @@
 const { getCostsBySize } = require("../models/adoptionCosts");
 const Dog = require("../models/Dog");
+const InitialAdoption = require("../models/InitialAdoption");
 
 async function getAdoptionCosts(req, res) {
   const dogId = req.params.dogId;
@@ -24,7 +25,7 @@ async function getAdoptionCosts(req, res) {
     const collarLeashPrice = dogResult.collar_leash ? 0 : 15;
     const obediencePrice = dogResult.obedience_classes_needed ? 65 : 0;
     const averageMedicalCost = 822;
-    console.log("ip", dogResult.initial_price);
+    console.log("ip", dogResult);
     console.log(
       "price",
       neuteredPrice,
@@ -46,6 +47,19 @@ async function getAdoptionCosts(req, res) {
       costOfValues.insurance.price +
       costOfValues.vet.price;
     const longTermCost = costOfValues.eol.price + averageMedicalCost;
+
+    const initialObject = {
+      calculated_price: initialCost,
+      neutering_price_id: costOfValues.neuter.id,
+      microchip_price: microchipPrice,
+      bed_size_id: costOfValues.bed.id,
+      collar_leash_price: collarLeashPrice,
+      obedience_classes_price: obediencePrice,
+      dog_id: dogResult.dog_id
+    };
+
+    // calculated_price, neutering_price_id, microchip_price, bed_size_id, collar_leash_price, obedience_classes_price, dog_id
+    await InitialAdoption.create(initialObject);
 
     // Send the response
     res.json({

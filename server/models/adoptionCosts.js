@@ -20,7 +20,7 @@ async function getCostsBySize(gender, size, neuterBoolean) {
   const eolQuery =
     "SELECT end_of_life_id, end_of_life_price FROM end_of_life WHERE size = $1";
 
-  try {
+
     const bedResult = await db.query(bedQuery, [size]);
     let neuterResult;
     if (!neuterBoolean) {
@@ -32,6 +32,13 @@ async function getCostsBySize(gender, size, neuterBoolean) {
     const insuranceResult = await db.query(insuranceQuery, [size]);
     const vetResult = await db.query(vetQuery, [size]);
     const eolResult = await db.query(eolQuery, [size]);
+
+    if ([foodResult.rows[0],
+      insuranceResult.rows[0],
+      vetResult.rows[0],
+      eolResult.rows[0]].every(val => val.length === 0 )) {
+        throw new Error("Failed to get costs");
+      }
 
     return {
       bed: {
@@ -59,9 +66,7 @@ async function getCostsBySize(gender, size, neuterBoolean) {
         id: eolResult.rows[0].end_of_life_id,
       },
     };
-  } catch (err) {
-    throw new Error("Failed to get costs: " + err.message);
-  }
+
 }
 
 module.exports = {

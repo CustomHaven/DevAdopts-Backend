@@ -11,7 +11,6 @@ async function interactWithAI(req, res) {
         const id = req.params.preference_id;
 
         const preference = await Preference.show(parseInt(id));
-
         const refinedObj = [preference].map(preference => {
             const finalObject = {};
             for (const [key, value] of Object.entries(preference)) {
@@ -21,19 +20,18 @@ async function interactWithAI(req, res) {
             }
             return finalObject;
         })[0];
-
         const updateQuestion = updateWhatToAsk(whatToAsk, requiredKeys, refinedObj);
-
+        
         if (updateQuestion.count === 10) {
             updateQuestion.question += JSON.stringify(refinedObj);
         }
 
         const gptResponse = await openai.chat.completions.create({
-            message: [{ "role": "assistant", "content": updateQuestion.question }],
+            messages: [{ "role": "assistant", "content": updateQuestion.question }],
             model: "gpt-4o-mini"
         });
 
-        res.status(200).json({ data: { answer: gptResponse.data.choices[0].message.content } });
+        res.status(200).json({ data: { answer: gptResponse.choices[0].message.content } });
 
     } catch (error) {
         res.status(400).json({ error: error.message });

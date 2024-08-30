@@ -120,15 +120,9 @@ CREATE TABLE dogs (
 CREATE TABLE initial_adoption_cost (
     initial_id INT GENERATED ALWAYS AS IDENTITY,
     calculated_price INT NOT NULL,
-    -- neutered BOOLEAN NOT NULL,
-    -- microchipped BOOLEAN NOT NULL,
     neutering_price_id INT NOT NULL,
     microchip_price FLOAT NOT NULL,
-    -- size_of_bed BOOLEAN NOT NULL,
-    -- bed_size_price INT NOT NULL, --25 , 30 ,35
     bed_size_id INT NOT NULL,
-    -- collar_leash BOOLEAN NOT NULL,
-    -- obedience_classes_needed BOOLEAN NOT NULL,
     collar_leash_price INT NOT NULL,
     obedience_classes_price INT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -301,7 +295,8 @@ VALUES
 ('Max', 'Male', 'Brown', 4, 'Medium', 'Labrador Retriever', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', FALSE, TRUE, TRUE, FALSE, TRUE, 'https://images.unsplash.com/photo-1537204696486-967f1b7198c8', 'E1 7QX'),
 ('Bella', 'Female', 'Black', 3, 'Small', 'Pomeranian', TRUE, FALSE, 'Medium', 'Small', TRUE, 'Medium', TRUE, '4', TRUE, FALSE, TRUE, TRUE, TRUE, 'https://plus.unsplash.com/premium_photo-1719177518277-9bf8126b277d', 'M1 2EH'),
 ('Charlie', 'Male', 'White', 5, 'Large', 'German Shepherd', TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '8', FALSE, TRUE, FALSE, TRUE, FALSE, 'https://images.unsplash.com/photo-1649923625148-1e13d9431053', 'BS1 2LZ'),
-('Luna', 'Female', 'Gray', 2, 'Medium', 'Siberian Husky', FALSE, TRUE, 'Medium', 'Medium', TRUE, 'Medium', FALSE, '5', TRUE, TRUE, TRUE, TRUE, TRUE, 'https://plus.unsplash.com/premium_photo-1668208363137-7ebc4ce6b7b7', 'B5 4HU');
+('Luna', 'Female', 'Gray', 2, 'Medium', 'Siberian Husky', FALSE, TRUE, 'Medium', 'Medium', TRUE, 'Medium', FALSE, '5', TRUE, TRUE, TRUE, TRUE, TRUE, 'https://plus.unsplash.com/premium_photo-1668208363137-7ebc4ce6b7b7', 'B5 4HU'),
+('Rocky', 'Male', 'Brindle', 6, 'Large', 'Boxer', TRUE, FALSE, 'High', 'Large', TRUE, 'Medium', TRUE, '6', TRUE, FALSE, TRUE, FALSE, TRUE, 'https://images.unsplash.com/photo-1619876451741-407e8350442e', 'SW1A 1AA');
 
 
 -- Insert data into initial_adoption_cost table
