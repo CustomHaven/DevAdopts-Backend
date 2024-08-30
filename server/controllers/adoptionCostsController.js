@@ -1,4 +1,3 @@
-const db = require("../db/connect");
 const { getCostsBySize } = require("../models/adoptionCosts");
 const Dog = require("../models/Dog");
 
