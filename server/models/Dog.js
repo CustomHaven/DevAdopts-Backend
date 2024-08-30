@@ -71,17 +71,20 @@ class Dog {
         throw new Error("Dog already exist");
     }
 
+    throw new Error("Dog already exist");
+  }
 
-    async update(data) {
-        for (const key of Object.keys(this)) {
-            if (key !== "dog_id" && key !== "timestamp") {
-                this[key] = data[key];
-            }
-        }
+  async update(data) {
+    for (const key of Object.keys(this)) {
+      if (key !== "dog_id" && key !== "timestamp") {
+        this[key] = data[key];
+      }
+    }
 
-        this.timestamp = new Date();
+    this.timestamp = new Date();
 
-        const response = await db.query(`UPDATE dogs
+    const response = await db.query(
+      `UPDATE dogs
                                             SET dog_name = $1, gender = $2, colour = $3, age = $4, size = $5, breed = $6, young_children_compatibility = $7, 
                                             small_animal_compatibility = $8, activity_levels = $9, living_space_size = $10, garden = $11, allergenic = $12,
                                             other_animals = $13, fencing = $14, experience_required = $15, adopted = $16, timestamp = $17, photo = $18, 
@@ -92,25 +95,20 @@ class Dog {
             this.activity_levels, this.living_space_size, this.garden, this.allergenic,  this.other_animals, this.fencing, this.experience_required, 
             this.adopted, this.timestamp, this.photo, this.shelter_location_postcode, this.dog_id]);
 
-
-        if (response.rows[0]) {
-            return new Dog(response.rows[0]);
-        } else {
-            throw new Error("Failed to update dog");
-        }
-        
+    if (response.rows[0]) {
+      return new Dog(response.rows[0]);
+    } else {
+      throw new Error("Failed to update dog");
     }
+  }
 
-
-    async destroy() {
-        const response = await db.query("DELETE FROM dogs WHERE dog_id = $1 RETURNING *;", [this.dog_id]);
-        return new Dog(response.rows[0]);
-    }
-
-};
-
+  async destroy() {
+    const response = await db.query(
+      "DELETE FROM dogs WHERE dog_id = $1 RETURNING *;",
+      [this.dog_id]
+    );
+    return new Dog(response.rows[0]);
+  }
+}
 
 module.exports = Dog;
-
-
-
