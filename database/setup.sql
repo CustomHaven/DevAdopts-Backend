@@ -71,16 +71,16 @@ CREATE TABLE end_of_life (
 
 CREATE TABLE preferences (
     preference_id INT GENERATED ALWAYS AS IDENTITY,
-    small_animals BOOLEAN NOT NULL,
-    young_children BOOLEAN NOT NULL,
-    activity VARCHAR(10) NOT NULL, -- low, medium high
-    living_space_size VARCHAR(50) NOT NULL,
-    garden BOOLEAN NOT NULL,
-    allergy_information VARCHAR(10) NOT NULL,
-    other_animals BOOLEAN NOT NULL,
-    fencing VARCHAR(10) NOT NULL, -- FEET
-    previous_experience_years INT NOT NULL,
-    annual_income INT,
+    small_animals TEXT,
+    young_children TEXT,
+    activity TEXT, -- low, medium high
+    living_space_size TEXT,
+    garden TEXT,
+    allergy_information TEXT,
+    other_animals TEXT,
+    fencing TEXT, -- FEET
+    previous_experience_years TEXT,
+    annual_income TEXT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id INT NOT NULL,
     PRIMARY KEY (preference_id),
@@ -106,6 +106,8 @@ CREATE TABLE dogs (
     other_animals BOOLEAN NOT NULL,
     fencing VARCHAR(10) NOT NULL, -- FEET
     experience_required BOOLEAN NOT NULL,
+    photo TEXT NOT NULL,
+    shelter_location_postcode VARCHAR(25) NOT NULL,
     adopted BOOLEAN NOT NULL DEFAULT FALSE, -- still available
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     neutered BOOLEAN NOT NULL,

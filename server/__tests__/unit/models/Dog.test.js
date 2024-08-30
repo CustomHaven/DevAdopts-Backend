@@ -25,6 +25,8 @@ describe("Dog Model", () => {
             other_animals: true,
             fencing: "4",
             experience_required: true,
+            photo: "https://someimage.jpg",
+            shelter_location_postcode: "SW1A 2AA",
             adopted: true,
             timestamp: datetime,
         };
@@ -234,12 +236,14 @@ describe("Dog Model", () => {
             expect(db.query).toHaveBeenCalledWith(`UPDATE dogs
                                             SET dog_name = $1, gender = $2, colour = $3, age = $4, size = $5, breed = $6, young_children_compatibility = $7, 
                                             small_animal_compatibility = $8, activity_levels = $9, living_space_size = $10, garden = $11, allergenic = $12,
-                                            other_animals = $13, fencing = $14, experience_required = $15, adopted = $16, timestamp = $17
-                                            WHERE dog_id = $18
+                                            other_animals = $13, fencing = $14, experience_required = $15, adopted = $16, timestamp = $17, photo = $18, 
+                                            shelter_location_postcode = $19
+                                            WHERE dog_id = $20
                                             RETURNING *`, 
                                             [
-        result.dog_name, result.gender, result.colour, result.age, result.size, result.breed, result.young_children_compatibility, result.small_animal_compatibility, result.activity_levels, 
-        result.living_space_size, result.garden, result.allergenic, result.other_animals, result.fencing, result.experience_required, result.adopted, result.timestamp, result.dog_id
+        result.dog_name, result.gender, result.colour, result.age, result.size, result.breed, result.young_children_compatibility, result.small_animal_compatibility, 
+        result.activity_levels, result.living_space_size, result.garden, result.allergenic, result.other_animals, result.fencing, 
+        result.experience_required, result.adopted, result.timestamp, result.photo, result.shelter_location_postcode, result.dog_id
                                             ]);
         });
     });
