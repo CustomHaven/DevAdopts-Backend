@@ -27,7 +27,11 @@ describe("Dogs API Endpoints", () => {
             photo: "https://images.unsplash.com/photo-1649923625148-1e13d9431053",
             shelter_location_postcode: "BS1 2LZ",
             adopted: false,
-            timestamp: '2024-08-28 22:59:20'
+            timestamp: '2024-08-28 22:59:20',
+            neutered: true, 
+            microchipped: false, 
+            collar_leash: true, 
+            obedience_classes_needed: false
         }
         await resetTestDB();
     });

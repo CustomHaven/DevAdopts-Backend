@@ -29,6 +29,10 @@ describe("Dog Model", () => {
             shelter_location_postcode: "SW1A 2AA",
             adopted: true,
             timestamp: datetime,
+            neutered: true,
+            microchipped: true,
+            collar_leash: true,
+            obedience_classes_needed: true
         };
         jest.clearAllMocks();
     });

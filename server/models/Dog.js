@@ -21,6 +21,10 @@ class Dog {
         this.photo = dog.photo;
         this.shelter_location_postcode = dog.shelter_location_postcode;
         this.adopted = dog.adopted;
+        this.neutered = dog.neutered;
+        this.microchipped = dog.microchipped;
+        this.collar_leash = dog.collar_leash;
+        this.obedience_classes_needed = dog.obedience_classes_needed;
         this.timestamp = (dog.timestamp instanceof Date ? dog.timestamp : new Date(dog.timestamp)).toISOString().replace(/T/, " ").replace(/\..+/, "");
     }
 
@@ -70,9 +74,6 @@ class Dog {
 
         throw new Error("Dog already exist");
     }
-
-    throw new Error("Dog already exist");
-  }
 
   async update(data) {
     for (const key of Object.keys(this)) {

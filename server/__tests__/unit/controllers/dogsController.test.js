@@ -36,6 +36,10 @@ describe("Dogs controller", () => {
             experience_required: true,
             adopted: true,
             timestamp: datetime,
+            neutered: true,
+            microchipped: true,
+            collar_leash: true,
+            obedience_classes_needed: true
         }
         
         
