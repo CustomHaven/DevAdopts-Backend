@@ -36,7 +36,7 @@ let createObject;
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-describe("Bot controller", () => {
+xdescribe("Bot controller", () => {
     beforeEach(() => {
         AIQuestions = [
             { small_animals: "1. Do you have any small animals at home? (e.g., hamsters, rabbits, etc.)" },

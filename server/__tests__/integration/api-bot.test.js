@@ -3,35 +3,35 @@ const app = require("../../app");
 const { resetTestDB } = require("./config");
 
 let resultObject;
+// const datetime = new Date();
 
-xdescribe("Bot API Endpoints", () => {
+// const year = datetime.getFullYear();
+// const month = String(datetime.getMonth() + 1).padStart(2, "0");
+// const day = String(datetime.getDate()).padStart(2, "0");
+// const datenow = `${year}-${month}-${day}`;
+
+const datetime = new Date();
+const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
+console.log("datenow", datenow)
+
+describe("Bot API Endpoints", () => {
     let api;
     beforeEach(async () => {
+        // -- (TRUE, FALSE, 'Low', 'Medium', TRUE, 'High', TRUE, '5', 2, 50000, 1),
         resultObject = {
-            dog_id: 3,
-            dog_name: 'charlie',
-            gender: 'male',
-            colour: 'white',
-            age: 1,
-            size: 'small',
-            breed: 'Poodle',
-            young_children_compatibility: false,
-            small_animal_compatibility: true,
-            activity_levels: 'low',
-            living_space_size: 'small',
-            garden: false,
-            allergenic: 'high',
-            other_animals: false,
-            fencing: '3',
-            experience_required: false,
-            photo: "https://images.unsplash.com/photo-1649923625148-1e13d9431053",
-            shelter_location_postcode: "BS1 2LZ",
-            adopted: false,
-            timestamp: '2024-08-28 22:59:20',
-            neutered: true, 
-            microchipped: false, 
-            collar_leash: true, 
-            obedience_classes_needed: false
+            preference_id: 3,
+            small_animals: true,
+            young_children: false,
+            activity: "Low",
+            living_space_size: "Medium",
+            garden: true,
+            allergy_information: "High",
+            other_animals: true,
+            fencing: "5",
+            previous_experience_years: 2,
+            annual_income: 50000,
+            timestamp: datenow,
+            user_id: 1
         }
         await resetTestDB();
     });
@@ -47,5 +47,49 @@ xdescribe("Bot API Endpoints", () => {
     afterAll(async () => {
         await api.close();
     });
+
+    describe("POST /bot/preferences", () => {
+        it("responds with 201 to POST / create a preference", async () => {
+            // Arrange:
+            const finalResult = Object.fromEntries(
+                Object.keys(resultObject).map(key => [key, null])
+            );
+            finalResult.user_id = resultObject.user_id;
+            finalResult.preference_id = resultObject.preference_id;
+
+            const mockReq = {
+                user_id: resultObject.user_id
+            }
+            // Act:
+            const response = await request(api).post("/bot/preferences").send(mockReq);
+            const resultData = response.body.data;
+            finalResult.timestamp = response.body.data.timestamp;
+            // Assert:
+            expect(response.statusCode).toBe(201);
+            expect(response.body.data).toEqual(resultData);
+            expect(response.body.data).toEqual(finalResult);
+        });
+
+        it("responds with 400 to POST / create a preference", async () => {
+            // Arrange:
+            const finalResult = Object.fromEntries(
+                Object.keys(resultObject).map(key => [key, null])
+            );
+            finalResult.user_id = resultObject.user_id;
+            finalResult.preference_id = resultObject.preference_id;
+
+            const mockReq = {
+                user_id: 44
+            }
+            // Act:
+            const response = await request(api).post("/bot/preferences").send(mockReq);
+            const resultData = response.body.error;
+            // Assert:
+            expect(response.statusCode).toBe(400);
+            expect(response.body.error).toEqual(resultData);
+        });
+
+    });
+
 
 });
