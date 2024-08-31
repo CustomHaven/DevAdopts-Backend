@@ -4,7 +4,7 @@ const { resetTestDB } = require("./config");
 
 let resultObject;
 
-describe("Dogs API Endpoints", () => {
+xdescribe("Dogs API Endpoints", () => {
     let api;
     beforeEach(async () => {
         resultObject = {

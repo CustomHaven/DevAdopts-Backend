@@ -119,38 +119,27 @@ CREATE TABLE dogs (
 
 CREATE TABLE initial_adoption_cost (
     initial_id INT GENERATED ALWAYS AS IDENTITY,
-    calculated_price INT NOT NULL,
+    calculated_initial_price INT NOT NULL,
     neutering_price_id INT NOT NULL,
     microchip_price FLOAT NOT NULL,
     bed_size_id INT NOT NULL,
     collar_leash_price INT NOT NULL,
     obedience_classes_price INT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    dog_id INT NOT NULL,
+    dog_id INT NOT NULL UNIQUE,
     PRIMARY KEY (initial_id),
     FOREIGN KEY (dog_id) REFERENCES dogs(dog_id) ON DELETE CASCADE,
     FOREIGN KEY (bed_size_id) REFERENCES bed_size(bed_size_id) ON DELETE CASCADE,
     FOREIGN KEY (neutering_price_id) REFERENCES neutering_price(neutering_price_id) ON DELETE CASCADE
 );
 
--- CREATE TABLE monthly_adoption_cost (
---     monthly_id INT GENERATED ALWAYS AS IDENTITY,
---     -- monthly_price INT,
---     amount_of_food INT NOT NULL, -- how much food would the owner spend on the dog
---     pet_insurance INT,
---     veterinary_care INT NOT NULL,
---     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     dog_id INT NOT NULL,
---     PRIMARY KEY (monthly_id),
---     FOREIGN KEY (dog_id) REFERENCES dogs(dog_id) ON DELETE CASCADE
--- );
-
 CREATE TABLE monthly_adoption_cost (
     monthly_id INT GENERATED ALWAYS AS IDENTITY,
+    calculated_monthly_cost INT NOT NULL,
     amount_of_food_id INT NOT NULL,
     pet_insurance_id INT NOT NULL,
     veterinary_care_id INT NOT NULL,
-    dog_id INT NOT NULL,
+    dog_id INT NOT NULL UNIQUE,
     PRIMARY KEY (monthly_id),
     FOREIGN KEY (amount_of_food_id) REFERENCES amount_of_food(amount_of_food_id) ON DELETE CASCADE,
     FOREIGN KEY (pet_insurance_id) REFERENCES pet_insurance(pet_insurance_id) ON DELETE CASCADE,
@@ -161,9 +150,10 @@ CREATE TABLE monthly_adoption_cost (
 CREATE TABLE long_term_adoption_cost (
     long_term_id INT GENERATED ALWAYS AS IDENTITY,
     -- major_medical_expenses INT NOT NULL,
+    calculated_long_term_cost INT NOT NULL,
     end_of_life_id INT NOT NULL,
     average_medical_cost INT NOT NULL,
-    dog_id INT NOT NULL,
+    dog_id INT NOT NULL UNIQUE,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (long_term_id),
     FOREIGN KEY (end_of_life_id) REFERENCES end_of_life(end_of_life_id) ON DELETE CASCADE,
@@ -222,6 +212,7 @@ INSERT INTO users (first_name, last_name, email, username, post_code, admin, pas
 VALUES 
 ('John', 'Doe', 'john.doe@example.com', 'johndoe', '12345', FALSE, 'password123'),
 ('Jane', 'Smith', 'jane.smith@example.com', 'janesmith', '54321', FALSE, 'password456');
+-- ('Emily', 'Johnson', 'emily.johnson@example.com', 'emilyjohnson', '98765', FALSE, 'password123');
 
 INSERT INTO bed_size (size, bed_price)
 values
@@ -300,12 +291,12 @@ VALUES
 
 
 -- Insert data into initial_adoption_cost table
-INSERT INTO initial_adoption_cost (calculated_price, neutering_price_id, microchip_price, bed_size_id, collar_leash_price, obedience_classes_price, dog_id)
+INSERT INTO initial_adoption_cost (calculated_initial_price, neutering_price_id, microchip_price, bed_size_id, collar_leash_price, obedience_classes_price, dog_id)
 VALUES 
 (110, 7, 0, 2, 15, 65, 1),
-(416, 4, 0, 1, 15, 65, 2),
-(300, 3, 10.90, 3, 15, 65, 3),
-(180, 5, 0, 2, 15, 65, 4);
+(416, 4, 0, 1, 0, 65, 2),
+(45.90, 7, 10.90, 3, 0, 0, 3),
+(95, 7, 0, 2, 0, 65, 4);
 
 
 -- Insert data into monthly_adoption_cost table
@@ -330,6 +321,7 @@ INSERT INTO user_dog (user_id, dog_id, adoption_date)
 VALUES 
 (1, 2, '2024-02-20'),
 (2, 4, '2024-04-05');
+-- (3, 3, '2024-08-31');
 
 -- INSERT INTO bed_size (bed_size_id, size, bed_price, dog_id)
 -- values
@@ -337,12 +329,12 @@ VALUES
 -- (2, 'Medium', 30),
 -- (3, 'Large', 35);
 
-INSERT INTO monthly_adoption_cost (amount_of_food_id, pet_insurance_id, veterinary_care_id, dog_id)
+INSERT INTO monthly_adoption_cost (calculated_monthly_cost, amount_of_food_id, pet_insurance_id, veterinary_care_id, dog_id)
 VALUES
-(2, 2, 2, 1),
-(1, 1, 1, 2),
-(3, 3, 3, 3),
-(2, 2, 2, 4);
+(117.50, 2, 2, 2, 1),
+(100, 1, 1, 1, 2),
+(157.50, 3, 3, 3, 3),
+(117.50, 2, 2, 2, 4);
 
 -- INSERT INTO amount_of_food (amount_of_food_id, size, food_price)
 -- VALUES
@@ -362,12 +354,12 @@ VALUES
 -- (2, 'Medium', 57.50),
 -- (3, 'Large', 62.50);
 
-INSERT INTO long_term_adoption_cost (end_of_life_id, average_medical_cost, dog_id)
+INSERT INTO long_term_adoption_cost (calculated_long_term_cost, end_of_life_id, average_medical_cost, dog_id)
 VALUES
-(2, 822, 1),
-(1, 822, 2),
-(3, 822, 3),
-(2, 822, 4);
+(1157, 2, 822, 1),
+(1087, 1, 822, 2),
+(1232, 3, 822, 3),
+(1157, 2, 822, 4);
 
 -- INSERT INTO end_of_life (end_of_life_id, size, end_of_life_price)
 -- VALUES
