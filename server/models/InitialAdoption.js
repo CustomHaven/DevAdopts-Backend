@@ -3,7 +3,7 @@ const db = require("../db/connect");
 class InitialAdoption {
     constructor(initial) {
         this.initial_id = initial.initial_id;
-        this.calculated_price = initial.calculated_price;
+        this.calculated_initial_price = initial.calculated_price;
         this.neutering_price_id = initial.neutering_price_id;
         this.microchip_price = initial.microchip_price;
         this.bed_size_id = initial.bed_size_id;
@@ -25,7 +25,7 @@ class InitialAdoption {
         } = data;
         console.log("CODE REACHES")
         const response = await db.query(`INSERT INTO initial_adoption_cost 
-                (calculated_price, neutering_price_id, microchip_price, bed_size_id, collar_leash_price, obedience_classes_price, dog_id)
+                (calculated_initial_price, neutering_price_id, microchip_price, bed_size_id, collar_leash_price, obedience_classes_price, dog_id)
                 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
             [calculated_price, neutering_price_id, microchip_price, bed_size_id, collar_leash_price, obedience_classes_price, dog_id])
 
