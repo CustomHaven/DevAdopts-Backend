@@ -11,8 +11,14 @@ const botRouter = require("./routers/botRouters.js");
 
 const app = express();
 
-// Serve static files from the 'client' directory
-app.use(cors());
+const corsOptions = {
+  origin: ["http://localhost:4728"],
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTION"],
+  allowedHeaders: ["Content-Type", "Accept", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(logger);
 

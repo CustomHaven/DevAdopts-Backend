@@ -53,18 +53,16 @@ class Preference {
         if (!key || value === undefined) {
             throw new Error("Key-value pair must be given");
         }
-
-        this[key] = value;
-
+        this[key] = String(value);
         this.timestamp = new Date();
 
         const response = await db.query(`UPDATE preferences
-                                            SET ${key} = $1
+                                            SET ${key} = $1,
                                             timestamp = $2
                                             WHERE preference_id = $3
                                             RETURNING *`, 
-            [value, this.timestamp, this.preference_id]);
-        
+            [this[key], this.timestamp, this.preference_id]);
+
         if (response.rows[0]) {
             const preferenceInstanceArray = [new Preference(response.rows[0])];
 

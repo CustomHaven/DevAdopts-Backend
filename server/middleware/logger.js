@@ -29,7 +29,7 @@ const logger = async (req, res, next) => {
             // console.log("logs", existingLogs)
         } catch (err) {
             if (err.code !== "NoSuchKey") {
-                console.log(req.method, req.originalUrl)
+                // console.log(req.method, req.originalUrl)
                 return next();
                 // throw err
             }
