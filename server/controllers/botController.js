@@ -20,7 +20,12 @@ async function interactWithAI(req, res) {
             }
             return finalObject;
         })[0];
+
+        console.log("REFINE", refinedObj);
+
         const updateQuestion = updateWhatToAsk(whatToAsk, requiredKeys, refinedObj);
+
+        console.log("updarequestion", updateQuestion);
         
         if (updateQuestion.count === 10) {
             updateQuestion.question += JSON.stringify(refinedObj);

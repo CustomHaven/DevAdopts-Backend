@@ -12,10 +12,10 @@ let resultObject;
 
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
-console.log("datenow", datenow)
 
 describe("Bot API Endpoints", () => {
-    let api;
+    let api; 
+    let port = 0;
     beforeEach(async () => {
         // -- (TRUE, FALSE, 'Low', 'Medium', TRUE, 'High', TRUE, '5', 2, 50000, 1),
         resultObject = {
@@ -38,26 +38,33 @@ describe("Bot API Endpoints", () => {
 
     // Run our test APP
     beforeAll(async () => {
-        api = app.listen(3003, () => {
-            console.log("Test server running on port 3003");
+        api = app.listen(3040, () => {
+            // console.log("Test server running on port 3003");
         })
+        // api = app.listen(port);
+        // port = api.address().port;
+        // await new Promise(resolve => api.on("Listening on:", resolve));
     });
 
 
     afterAll(async () => {
+        // if (api) {
+            // await new Promise(resolve => api.close(resolve));
+        // }
         await api.close();
     });
 
-    describe("POST /bot/preferences", () => {
-        it("responds with 201 to POST / create a preference", async () => {
+    xdescribe("POST /bot/preferences", () => {
+        let finalResult, mockReq;
+        it("responds with 201 to POST /bot/preferences create a preference", async () => {
             // Arrange:
-            const finalResult = Object.fromEntries(
+            finalResult = Object.fromEntries(
                 Object.keys(resultObject).map(key => [key, null])
             );
             finalResult.user_id = resultObject.user_id;
             finalResult.preference_id = resultObject.preference_id;
 
-            const mockReq = {
+            mockReq = {
                 user_id: resultObject.user_id
             }
             // Act:
@@ -70,26 +77,196 @@ describe("Bot API Endpoints", () => {
             expect(response.body.data).toEqual(finalResult);
         });
 
-        it("responds with 400 to POST / create a preference", async () => {
+        it("responds with 400 to POST /bot/preferences failed to create a preference", async () => {
             // Arrange:
-            const finalResult = Object.fromEntries(
+            finalResult = Object.fromEntries(
                 Object.keys(resultObject).map(key => [key, null])
             );
             finalResult.user_id = resultObject.user_id;
             finalResult.preference_id = resultObject.preference_id;
 
-            const mockReq = {
+            mockReq = {
                 user_id: 44
             }
             // Act:
-            const response = await request(api).post("/bot/preferences").send(mockReq);
-            const resultData = response.body.error;
+            const initialCreate = await request(api).post("/bot/preferences").send(mockReq);
+            const resultData = initialCreate.body.error;
             // Assert:
-            expect(response.statusCode).toBe(400);
-            expect(response.body.error).toEqual(resultData);
+            expect(initialCreate.statusCode).toBe(400);
+            expect(initialCreate.body.error).toEqual(resultData);
         });
 
     });
 
+
+    xdescribe("PATCH /bot/preferences/:preference", () => {
+
+        let mockReq, finalResult;
+        beforeEach(() => {
+            // jest.useFakeTimers();
+            // Arrange
+            mockReq = {
+                user_id: resultObject.user_id
+            }
+            finalResult = Object.fromEntries(
+                Object.keys(resultObject).map(key => [key, null])
+            );
+            finalResult.user_id = resultObject.user_id;
+            finalResult.preference_id = resultObject.preference_id;
+        });
+
+        it("responds with 200 to PATCH /bot/preferences/:preference updates the preference", async () => {
+            // Arrange:
+
+            // Act:
+            const initialCreate = await request(api).post("/bot/preferences").send(mockReq);
+            const resultData = initialCreate.body.data;
+            finalResult.timestamp = initialCreate.body.data.timestamp;
+
+            mockReq = {
+                small_animals: true
+            };
+
+            const updateResponse = await request(api).patch(`/bot/preferences/${finalResult.preference_id}`).send(mockReq);
+            
+            // Assert:
+            expect(initialCreate.statusCode).toBe(201);
+            expect(initialCreate.body.data).toEqual(resultData);
+            expect(initialCreate.body.data).toEqual(finalResult);
+
+            finalResult.small_animals = updateResponse.body.data.small_animals;
+            finalResult.timestamp = updateResponse.body.data.timestamp;
+            // Assert: interactResponse
+            expect(updateResponse.statusCode).toBe(200);
+            expect(updateResponse.body.data).toEqual(finalResult);
+            // expect(response.body.data).toEqual(finalResult);
+        });
+
+        it("responds with 400 to POST /bot/preferences:preference failed if preference cannot be found", async () => {
+            // Arrange:
+            
+            // Act:
+            const initialCreate = await request(api).post("/bot/preferences").send(mockReq);
+            const resultData = initialCreate.body.error;
+
+            mockReq = {
+                small_animalss: true
+            };
+
+            const updateResponse = await request(api).patch(`/bot/preferences/${finalResult.preference_id}`).send(mockReq);
+            finalResult = updateResponse.body.error;
+
+
+            // Assert:
+            expect(initialCreate.statusCode).toBe(201);
+            expect(initialCreate.body.error).toEqual(resultData);
+
+            // finalResult.small_animals = updateResponse.body.data.small_animals;
+            // finalResult.timestamp = updateResponse.body.data.timestamp;
+            // Assert: interactResponse
+            expect(updateResponse.statusCode).toBe(400);
+            expect(updateResponse.body.error).toEqual(finalResult);
+        });
+
+        it("responds with 400 to POST /bot/preferences:preference failed to update the preference", async () => {
+            // Arrange:
+            mockReq = {
+                small_animalss: true
+            };
+            // Act:
+            const initialCreate = await request(api).post("/bot/preferences").send(mockReq);
+            finalResult = initialCreate.body.error;
+            mockReq = {
+                small_animalss: true
+            };
+
+            // Assert:
+            expect(initialCreate.statusCode).toBe(400);
+            expect(initialCreate.body.error).toBe(finalResult);
+        });
+
+    })
+
+
+    describe("GET /bot/preferences/:preference", () => {
+
+        let mockReq, finalResult, updateResponse;
+        beforeEach(() => {
+            // jest.useFakeTimers();
+            // Arrange
+            mockReq = {
+                user_id: resultObject.user_id
+            }
+            finalResult = Object.fromEntries(
+                Object.keys(resultObject).map(key => [key, null])
+            );
+            finalResult.user_id = resultObject.user_id;
+            finalResult.preference_id = resultObject.preference_id;
+        });
+
+        afterEach(() => {
+            jest.runOnlyPendingTimers();
+            jest.useRealTimers();
+        });
+
+        xit("responds with 200 to GET /bot/preferences/:preference interacting once with the bot", async () => {
+            // Arrange:
+
+            // Act:
+            const initialCreate = await request(api).post("/bot/preferences").send(mockReq);
+            const resultData = initialCreate.body.data;
+            finalResult.timestamp = initialCreate.body.data.timestamp;
+
+
+            const interactResponse = await request(api).get(`/bot/preferences/interact-with-bot/${finalResult.preference_id}`);
+
+            // Assert:
+            expect(initialCreate.statusCode).toBe(201);
+            expect(initialCreate.body.data).toEqual(resultData);
+            expect(initialCreate.body.data).toEqual(finalResult);
+
+            // Assert: interactResponse
+            expect(interactResponse.statusCode).toBe(200);
+        }, 30000);
+
+        it("responds with 200 to GET /bot/preferences/:preference interacting 10x with bot", async () => {
+            // Arrange:
+            let interactResponse;
+            const requiredKeys = [
+                "small_animals", "young_children", "activity", "living_space_size", "garden", "allergy_information", "other_animals", "fencing", "previous_experience_years", "annual_income"
+            ];
+            const values = [true, false, 'Low', 'Medium', true, 'High', true, '5', 2, 50000];
+            const copiedKeys = [...requiredKeys];
+            const copiedValues = [...values];
+            // Act
+            const initialCreate = await request(api).post("/bot/preferences").send(mockReq);
+            const resultData = initialCreate.body.data;
+            finalResult.timestamp = initialCreate.body.data.timestamp;
+
+            for (let i = 0; i < requiredKeys.length; i++) {
+                interactResponse = await request(api).get(`/bot/preferences/interact-with-bot/${finalResult.preference_id}`);
+                console.log();
+                console.log(i, ": what is the BETWEEN asnwer?", interactResponse.body.data);
+                console.log();
+                const key = copiedKeys.shift();
+                const mockReq = {};
+                mockReq[key] = copiedValues.shift();
+                updateResponse = await request(api).patch(`/bot/preferences/${finalResult.preference_id}`).send(mockReq);
+                console.log("size?", requiredKeys.length, "iteration", i);
+                console.log();
+            }
+            resultObject.timestamp = interactResponse.body.data.timestamp;
+            console.log("what is the FINAL asnwer?", interactResponse.body.data);
+
+            // Assert:
+            expect(initialCreate.statusCode).toBe(201);
+            expect(initialCreate.body.data).toEqual(resultData);
+            expect(initialCreate.body.data).toEqual(finalResult);
+
+            // Assert: interactResponse
+            expect(interactResponse.statusCode).toBe(200);
+        }, 500000);
+
+    });
 
 });

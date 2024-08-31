@@ -1,27 +1,27 @@
 const whatToAsk = `
-Please just ask me straight away dont start off with Sure lets get started or something similar! Ask me question around these things 1 by 1:
+Please just ask me straight away dont start off with Sure lets get started or something similar, and also dont put a number before the question! Ask me question around these things 1 by 1 and in chronological order:
 
-    small_animals BOOLEAN NOT NULL,
-    young_children BOOLEAN NOT NULL,
-    activity VARCHAR(10) NOT NULL, -- low, medium high
-    living_space_size VARCHAR(50) NOT NULL,
-    garden BOOLEAN NOT NULL,
-    allergy_information VARCHAR(10) NOT NULL,
-    other_animals BOOLEAN NOT NULL,
-    fencing VARCHAR(10) NOT NULL, -- FEET
-    previous_experience_years INT NOT NULL,
-    annual_income INT
+- small_animals (Ask if they got small animals? true/false),
+- young_children (Ask if they got young children),
+- activity (Ask how active they are: low, medium, high)
+- living_space_size (Ask about the size of their home? is it small, medium, large),
+- garden (Ask if they have a garden),
+- allergy_information (Ask if they got allergies),
+- other_animals (Ask if they got other animals),
+- fencing (Ask the size of their fence in FEET),
+- previous_experience_years (Ask if they got previous experience with dogs),
+- annual_income (Ask about their annual income),
 
-    When done gather all the information and tell me what 5 dog breed you would recommend for me.
+When done gather all the information and tell me what 5 dog breed you would recommend for me.
 `;
 
 const updateWhatToAsk = (question, helperArray, alreadyAsked) => {
     let updatedquestion = question;
     let count = 0;
     helperArray.forEach(key => {
-        if (key in alreadyAsked) {
+        if (alreadyAsked[key] !== null) {
             count++;
-            const regex = new RegExp(`\\s*${key}\\s+\\S+\\s+\\S*\\s*,?`, "i");
+            const regex = new RegExp(`-\\s*${key}\\s*\\(.*?\\)\\s*,?\\s*`, "i");
             updatedquestion = updatedquestion.replace(regex, "");
         }
     });

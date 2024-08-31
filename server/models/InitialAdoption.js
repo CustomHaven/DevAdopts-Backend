@@ -32,8 +32,9 @@ class InitialAdoption {
         if (response.rows[0] === 0) {
             throw new Error("Failed to create the table row")
         }
-
-        return new InitialAdoption(response.rows[0]);
+        const final = new InitialAdoption(response.rows[0])
+        console.log("We add into the interaction table!", )
+        return final;
     }
 };
 
