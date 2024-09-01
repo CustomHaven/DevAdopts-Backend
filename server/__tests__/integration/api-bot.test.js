@@ -38,7 +38,7 @@ describe("Bot API Endpoints", () => {
 
     // Run our test APP
     beforeAll(async () => {
-        api = app.listen(3040, () => {
+        api = app.listen(3442, () => {
             // console.log("Test server running on port 3003");
         })
         // api = app.listen(port);
@@ -245,15 +245,34 @@ describe("Bot API Endpoints", () => {
 
             for (let i = 0; i < requiredKeys.length; i++) {
                 interactResponse = await request(api).get(`/bot/preferences/interact-with-bot/${finalResult.preference_id}`);
-                console.log();
-                console.log(i, ": what is the BETWEEN asnwer?", interactResponse.body.data);
-                console.log();
-                const key = copiedKeys.shift();
-                const mockReq = {};
-                mockReq[key] = copiedValues.shift();
-                updateResponse = await request(api).patch(`/bot/preferences/${finalResult.preference_id}`).send(mockReq);
-                console.log("size?", requiredKeys.length, "iteration", i);
-                console.log();
+                console.log("interactResponse!", interactResponse.body);
+                if (interactResponse.body.error) {
+                    i = i - 1;
+                    setTimeout(() => {
+                        console.log("some error we wait");
+                    }, 30000);
+                } else {
+                    console.log();
+                    console.log(i, ": what is the BETWEEN asnwer?", interactResponse.body.data);
+                    console.log();
+                    const key = copiedKeys.shift();
+                    const mockReq = {};
+                    mockReq[key] = copiedValues.shift();
+                    updateResponse = await request(api).patch(`/bot/preferences/${finalResult.preference_id}`).send(mockReq);
+                    console.log("size?", requiredKeys.length, "iteration", i);
+                    console.log();
+                }
+                console.log("the count:", i)
+            }
+
+            if (interactResponse.body.error) {
+                interactResponse = await request(api).get(`/bot/preferences/interact-with-bot/${finalResult.preference_id}`);
+            } else {
+                interactResponse = await request(api).get(`/bot/preferences/interact-with-bot/${finalResult.preference_id}`);
+            }
+
+            while (interactResponse.body.error) {
+                interactResponse = await request(api).get(`/bot/preferences/interact-with-bot/${finalResult.preference_id}`);
             }
             resultObject.timestamp = interactResponse.body.data.timestamp;
             console.log("what is the FINAL asnwer?", interactResponse.body.data);
