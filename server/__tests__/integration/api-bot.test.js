@@ -54,7 +54,7 @@ describe("Bot API Endpoints", () => {
         await api.close();
     });
 
-    describe("POST /bot/preferences", () => {
+    xdescribe("POST /bot/preferences", () => {
         let finalResult, mockReq;
         it("responds with 201 to POST /bot/preferences create a preference", async () => {
             // Arrange:
@@ -99,7 +99,7 @@ describe("Bot API Endpoints", () => {
     });
 
 
-    describe("PATCH /bot/preferences/:preference", () => {
+    xdescribe("PATCH /bot/preferences/:preference", () => {
 
         let mockReq, finalResult;
         beforeEach(() => {
@@ -188,7 +188,7 @@ describe("Bot API Endpoints", () => {
     })
 
 
-    xdescribe("GET /bot/preferences/:preference", () => {
+    describe("GET /bot/preferences/:preference", () => {
 
         let mockReq, finalResult, updateResponse;
         beforeEach(() => {

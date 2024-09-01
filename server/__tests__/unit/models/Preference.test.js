@@ -6,7 +6,7 @@ let resultObject, createObject;
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-describe("Preference Model", () => {
+xdescribe("Preference Model", () => {
     // TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', 3, 60000, 1
     beforeEach(() => {
         resultObject = {

@@ -29,6 +29,13 @@ class User {
     }
     return new User(response.rows[0]);
   }
+  static async show(id) {
+    const response = await db.query("SELECT * FROM users WHERE user_id = $1;", [id]);
+    if (response.rows.length !== 1) {
+        throw new Error("No user found");
+    }
+    return new User(response.rows[0]);
+  }
 
   static async create(data) {
     const {
@@ -37,12 +44,11 @@ class User {
       email,
       username,
       password,
-      post_code,
-      admin,
+      post_code
     } = data;
     let response = await db.query(
-      "INSERT INTO users (first_name, last_name, email, username, password, post_code, admin) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;",
-      [first_name, last_name, email, username, password, post_code, admin]
+      "INSERT INTO users (first_name, last_name, email, username, password, post_code) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;",
+      [first_name, last_name, email, username, password, post_code]
     );
     if (response.rows.length !== 1) {
       throw new Error(" Result entry already exists.");
@@ -57,6 +63,13 @@ class User {
     if (response.rows.length !== 1) {
       throw new Error("No user found");
     }
+    return new User(response.rows[0]);
+  }
+
+  async destroy() {
+    const response = await db.query("DELETE FROM users WHERE user_id = $1 RETURNING *;", [
+      this.user_id
+    ]);
     return new User(response.rows[0]);
   }
 }

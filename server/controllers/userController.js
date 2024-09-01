@@ -61,8 +61,20 @@ async function show(req, res) {
   }
 }
 
+async function destroy(req, res) {
+  try {
+    const id = req.params.id;
+    const user = await User.show(parseInt(id));
+    await user.destroy();
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+}
+
 module.exports = {
   register,
   login,
   show,
+  destroy
 };

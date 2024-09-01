@@ -131,7 +131,7 @@ describe("Dog Model", () => {
 
             // Act
             const result = await Dog.create(copyResultObject);
-            
+            console.log("TEST RESOLVE", mockResult);
             // Assert
             expect(result).toBeInstanceOf(Dog);
             expect(result.dog_id).toBe(5);

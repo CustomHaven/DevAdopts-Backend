@@ -3,6 +3,7 @@ const cors = require("cors");
 
 const logger = require("./middleware/logger");
 const authenticator = require("./middleware/authenticator");
+const { swaggerUi, swaggerSpec } = require("./middleware/swagger");
 
 const usersRouter = require("./routers/userRouter");
 const dogsRouter = require("./routers/dogsRouters");
@@ -22,6 +23,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(logger);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req, res) => {
   res.status(200).json({
