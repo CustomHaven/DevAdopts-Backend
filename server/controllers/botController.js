@@ -21,7 +21,7 @@ async function interactWithAI(req, res) {
             return finalObject;
         })[0];
 
-        console.log("REFINE", refinedObj);
+        // console.log("REFINE", refinedObj);
 
         const updateQuestion = updateWhatToAsk(whatToAsk, requiredKeys, refinedObj);
 
@@ -30,13 +30,37 @@ async function interactWithAI(req, res) {
         if (updateQuestion.count === 10) {
             updateQuestion.question += JSON.stringify(refinedObj);
         }
+        // async function spendToTier1() {
+        //     const promises = [];
+        //     for (let i = 0; i < 100; i++) {
+        //         console.log(i, ": first")
+        //         promises.push(
+        //             openai.chat.completions.create({
+        //                 model: "gpt-3.5-turbo",
+        //                 messages: [{ "role": "user", "content": "Explain quantum computing in detail." }]
+        //             })
+        //         );
+        //     }
+        //     console.log(promises)
+        //     await Promise.all(promises);
+        //     console.log('Requests sent.');
+        // }
+        
+        // spendToTier1();
 
         const gptResponse = await openai.chat.completions.create({
+            // messages: [{ "role": "user", "content": "Explain quantum computing in detail." }],
             messages: [{ "role": "assistant", "content": updateQuestion.question }],
+            // model: "gpt-3.5-turbo"
             model: "gpt-4o-mini"
+            // model: "text-embedding-3-small"
         });
 
+        console.log("gpt info!", gptResponse);
+
         res.status(200).json({ data: { answer: gptResponse.choices[0].message.content } });
+
+        // res.status(200).json({ data: { answer: "gptResponse.choices[0].message.content" } });
 
     } catch (error) {
         res.status(400).json({ error: error.message });

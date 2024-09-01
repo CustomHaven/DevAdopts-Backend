@@ -7,7 +7,8 @@ const authenticator = require("./middleware/authenticator");
 const usersRouter = require("./routers/userRouter");
 const dogsRouter = require("./routers/dogsRouters");
 const adoptionCostsRouter = require("./routers/adoptionCostsRouter");
-const botRouter = require("./routers/botRouters.js");
+const botRouter = require("./routers/botRouters");
+const googleMapRouter = require("./routers/googleMapRouter");
 
 const app = express();
 
@@ -36,5 +37,8 @@ app.use("/dogs", dogsRouter);
 app.use("/users", usersRouter);
 app.use("/adoptioncosts", adoptionCostsRouter);
 app.use("/bot/preferences", botRouter);
+app.use("/maps", googleMapRouter);
+
+
 
 module.exports = app;
