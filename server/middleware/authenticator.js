@@ -7,18 +7,18 @@ async function authenticator(req, res, next) {
     const token = authHeader.split(" ")[1];
     const blacklist = await BlacklistToken.show(token);
     if (blacklist) {
-      res.status(403).json({ err: "Token was blacklisted" });
+      return res.status(403).json({ err: "Token was blacklisted" });
     } else {
       jwt.verify(token, process.env.SECRET_TOKEN, async (err, data) => {
         if (err) {
-          res.status(401).json({ err: "Invalid token" });
+          return res.status(401).json({ err: "Invalid token" });
         } else {
           next();
         }
       });
     }
   } else {
-    res.status(401).json({ err: "Missing token" });
+    return res.status(401).json({ err: "Missing token" });
   }
 }
 

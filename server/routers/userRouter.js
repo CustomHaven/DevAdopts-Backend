@@ -173,16 +173,6 @@ userRouter.post("/login", usersController.login);
  *               properties:
  *                 data:
  *                   $ref: "#/components/schemas/User"
- *       403:
- *         description: Forbidden, user does not have administrative privileges
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Forbidden, user does not have administrative privileges"
  *       400:
  *         description: Bad request - Invalid input
  *         content:
@@ -193,6 +183,16 @@ userRouter.post("/login", usersController.login);
  *                 error:
  *                   type: string
  *                   example: "Invalid input data"
+ *       403:
+ *         description: Forbidden, user does not have administrative privileges
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Forbidden, user does not have administrative privileges"
  */
 userRouter.post("/create-admin", adminAuth, usersController.createAdmin);
 
