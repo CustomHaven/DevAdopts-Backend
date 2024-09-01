@@ -15,7 +15,7 @@ const mockRes = { status: mockStatus, sendStatus: mockSendStatus };
 let resultObject
 const datetime = new Date();
 
-xdescribe("Dogs controller", () => {
+describe("Dogs controller", () => {
     beforeEach(() => {
         resultObject = {
             dog_id: 1,

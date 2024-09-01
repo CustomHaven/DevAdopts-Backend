@@ -4,7 +4,7 @@ const { resetTestDB } = require("./config");
 
 let resultObject;
 
-xdescribe("Dogs API Endpoints", () => {
+describe("Dogs API Endpoints", () => {
     let api;
     beforeEach(async () => {
         resultObject = {
@@ -38,8 +38,7 @@ xdescribe("Dogs API Endpoints", () => {
 
     // Run our test APP
     beforeAll(async () => {
-        api = app.listen(3003, () => {
-            console.log("Test server running on port 3003");
+        api = app.listen(3033, () => {
         })
     });
 
@@ -71,11 +70,11 @@ xdescribe("Dogs API Endpoints", () => {
             const copyResultObject = {
                 ...resultObject, dog_name: "newDog", size: "large"
             }
-            console.log("WHY FAIL POST", copyResultObject)
+
             // // Act:
             const response = await request(api).post("/dogs").send(copyResultObject);
             const resultData = response.body.data;
-            console.log("POST FAIL", response.body);
+            // console.log("POST FAIL", response.body);
             // // Assert:
             expect(response.statusCode).toBe(201);
             expect(response.body.data).toEqual(resultData);

@@ -5,7 +5,7 @@ let resultObject;
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-xdescribe("Dog Model", () => {
+describe("Dog Model", () => {
 
     beforeEach(() => {
         resultObject = {

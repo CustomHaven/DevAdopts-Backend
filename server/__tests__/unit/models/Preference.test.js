@@ -6,7 +6,7 @@ let resultObject, createObject;
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-xdescribe("Preference Model", () => {
+describe("Preference Model", () => {
     // TRUE, TRUE, 'High', 'Large', TRUE, 'Low', TRUE, '6', 3, 60000, 1
     beforeEach(() => {
         resultObject = {
@@ -145,15 +145,15 @@ xdescribe("Preference Model", () => {
             const result = await preferenceObject.update(key, value);
             // Assert
             expect(preferenceObject).toBeInstanceOf(Preference);
-            expect(preferenceObject[key]).toBe(value);
+            expect(preferenceObject[key]).toBe(String(value));
 
             expect(db.query).toHaveBeenCalledTimes(1);
             expect(db.query).toHaveBeenCalledWith(`UPDATE preferences
-                                            SET ${key} = $1
+                                            SET ${key} = $1,
                                             timestamp = $2
                                             WHERE preference_id = $3
                                             RETURNING *`, 
-                [value, preferenceObject.timestamp, preferenceObject.preference_id]);
+                [String(value), preferenceObject.timestamp, preferenceObject.preference_id]);
             expect(result).toEqual(finalResult);
         });
 
@@ -167,11 +167,11 @@ xdescribe("Preference Model", () => {
             // Arrange
             await expect(result.update(key, value)).rejects.toThrow("Failed to update preference table");
             expect(db.query).toHaveBeenCalledWith(`UPDATE preferences
-                                            SET ${key} = $1
+                                            SET ${key} = $1,
                                             timestamp = $2
                                             WHERE preference_id = $3
                                             RETURNING *`, 
-                                            [value, result.timestamp, result.preference_id]);
+                                            [String(value), result.timestamp, result.preference_id]);
         });
 
         it("throws if key or a value is missing", async () => {
@@ -181,12 +181,6 @@ xdescribe("Preference Model", () => {
 
             // Test with missing 2 parameter
             await expect(preferenceInstance.update()).rejects.toThrow("Key-value pair must be given");
-            // // Alternatively, test with missing key breed and size
-            // delete copyResultObject.size;
-            // await expect(Preference.create(copyResultObject)).rejects.toThrow("At least one of the required fields is missing");
-
-            // // Alternatively, test with no arguments
-            // await expect(Preference.create({})).rejects.toThrow("At least one of the required fields is missing");
         });
     });
 

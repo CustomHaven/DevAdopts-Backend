@@ -38,7 +38,7 @@ describe("Bot API Endpoints", () => {
 
     // Run our test APP
     beforeAll(async () => {
-        api = app.listen(3442, () => {
+        api = app.listen(3044, () => {
             // console.log("Test server running on port 3003");
         })
         // api = app.listen(port);
@@ -54,7 +54,7 @@ describe("Bot API Endpoints", () => {
         await api.close();
     });
 
-    xdescribe("POST /bot/preferences", () => {
+    describe("POST /bot/preferences", () => {
         let finalResult, mockReq;
         it("responds with 201 to POST /bot/preferences create a preference", async () => {
             // Arrange:
@@ -99,7 +99,7 @@ describe("Bot API Endpoints", () => {
     });
 
 
-    xdescribe("PATCH /bot/preferences/:preference", () => {
+    describe("PATCH /bot/preferences/:preference", () => {
 
         let mockReq, finalResult;
         beforeEach(() => {
@@ -188,7 +188,7 @@ describe("Bot API Endpoints", () => {
     })
 
 
-    describe("GET /bot/preferences/:preference", () => {
+    xdescribe("GET /bot/preferences/:preference", () => {
 
         let mockReq, finalResult, updateResponse;
         beforeEach(() => {
