@@ -5,7 +5,7 @@ let resultObject;
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-xdescribe("Dog Model", () => {
+describe("Dog Model", () => {
 
     beforeEach(() => {
         resultObject = {
@@ -131,7 +131,7 @@ xdescribe("Dog Model", () => {
 
             // Act
             const result = await Dog.create(copyResultObject);
-            
+            console.log("TEST RESOLVE", mockResult);
             // Assert
             expect(result).toBeInstanceOf(Dog);
             expect(result.dog_id).toBe(5);

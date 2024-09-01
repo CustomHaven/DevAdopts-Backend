@@ -38,7 +38,7 @@ describe("Bot API Endpoints", () => {
 
     // Run our test APP
     beforeAll(async () => {
-        api = app.listen(3442, () => {
+        api = app.listen(3044, () => {
             // console.log("Test server running on port 3003");
         })
         // api = app.listen(port);

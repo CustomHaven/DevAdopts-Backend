@@ -46,46 +46,50 @@ class Dog {
 
     static async create(data) {
 
-        const { dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels,
-            living_space_size, garden, allergenic, other_animals, fencing, experience_required, dog_id, photo, shelter_location_postcode } = data;
+        const { dog_name, gender, colour, age, size, breed, young_children_compatibility,
+            small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, 
+            other_animals, fencing, experience_required, dog_id, photo, shelter_location_postcode, neutered,
+            microchipped, collar_leash, obedience_classes_needed } = data;
 
         // Check for missing fields
         const missingFields = [
-            "dog_name", "gender", "colour", "age", "size", "breed",
-            "young_children_compatibility", "small_animal_compatibility", "activity_levels",
-            "living_space_size", "garden", "allergenic", "other_animals", "fencing", "experience_required"
+            "dog_name", "gender", "colour", "age", "size", "breed", "neutered", "microchipped", "collar_leash",
+            "young_children_compatibility", "small_animal_compatibility", "activity_levels", "obedience_classes_needed",
+            "living_space_size", "garden", "allergenic", "other_animals", "fencing", "experience_required", "photo"
         ].filter(field => data[field] === undefined || data[field] === null);
 
         if (missingFields.length > 0) {
             throw new Error("At least one of the required fields is missing");
         }
-
         const existingDog = await db.query("SELECT * FROM dogs WHERE dog_id = $1", [dog_id]);
-
         if (existingDog.rows.length === 0) {
             const response = await db.query(`INSERT INTO dogs 
-                (dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, 
-                living_space_size, garden, allergenic, other_animals, fencing, experience_required, photo, shelter_location_postcode)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING *`, 
-                [dog_name, gender, colour, age, size, breed, young_children_compatibility, small_animal_compatibility, activity_levels, 
-                    living_space_size, garden, allergenic, other_animals, fencing, experience_required, photo, shelter_location_postcode]);
+                (dog_name, gender, colour, age, size, breed, young_children_compatibility,
+                small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, 
+                other_animals, fencing, experience_required, photo, shelter_location_postcode, neutered,
+                microchipped, collar_leash, obedience_classes_needed)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) RETURNING *`, 
+                [dog_name, gender, colour, age, size, breed, young_children_compatibility,
+                small_animal_compatibility, activity_levels, living_space_size, garden, allergenic, 
+                other_animals, fencing, experience_required, photo, shelter_location_postcode, 
+                neutered, microchipped, collar_leash, obedience_classes_needed]);
             return new Dog(response.rows[0]);
         }
 
         throw new Error("Dog already exist");
     }
 
-  async update(data) {
-    for (const key of Object.keys(this)) {
-      if (key !== "dog_id" && key !== "timestamp") {
-        this[key] = data[key];
-      }
-    }
+    async update(data) {
+        for (const key of Object.keys(this)) {
+            if (key !== "dog_id" && key !== "timestamp") {
+                this[key] = data[key];
+            }
+        }
 
-    this.timestamp = new Date();
+        this.timestamp = new Date();
 
-    const response = await db.query(
-      `UPDATE dogs
+        const response = await db.query(
+                                        `UPDATE dogs
                                             SET dog_name = $1, gender = $2, colour = $3, age = $4, size = $5, breed = $6, young_children_compatibility = $7, 
                                             small_animal_compatibility = $8, activity_levels = $9, living_space_size = $10, garden = $11, allergenic = $12,
                                             other_animals = $13, fencing = $14, experience_required = $15, adopted = $16, timestamp = $17, photo = $18, 
@@ -96,20 +100,20 @@ class Dog {
             this.activity_levels, this.living_space_size, this.garden, this.allergenic,  this.other_animals, this.fencing, this.experience_required, 
             this.adopted, this.timestamp, this.photo, this.shelter_location_postcode, this.dog_id]);
 
-    if (response.rows[0]) {
-      return new Dog(response.rows[0]);
-    } else {
-      throw new Error("Failed to update dog");
+        if (response.rows[0]) {
+            return new Dog(response.rows[0]);
+        } else {
+                throw new Error("Failed to update dog");
+        }
     }
-  }
 
-  async destroy() {
-    const response = await db.query(
-      "DELETE FROM dogs WHERE dog_id = $1 RETURNING *;",
-      [this.dog_id]
-    );
-    return new Dog(response.rows[0]);
-  }
+    async destroy() {
+        const response = await db.query(
+            "DELETE FROM dogs WHERE dog_id = $1 RETURNING *;",
+            [this.dog_id]
+        );
+        return new Dog(response.rows[0]);
+    }
 }
 
 module.exports = Dog;

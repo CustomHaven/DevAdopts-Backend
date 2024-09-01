@@ -1,9 +1,18 @@
 const Preference = require("../models/Preference");
 const openai = require("../services/openaiSetup");
 const { updateWhatToAsk, whatToAsk } = require("../utils/chatGPTHelper");
+const axios = require("axios");
 
 async function interactWithAI(req, res) {
     try {
+        const url = process.env.AI21_URL;
+        const token = process.env.AI21_API;
+
+        const headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        };
         const requiredKeys = [
             "small_animals", "young_children", "activity", "living_space_size", "garden", "allergy_information", "other_animals", "fencing", "previous_experience_years", "annual_income"
         ]
@@ -25,11 +34,27 @@ async function interactWithAI(req, res) {
 
         const updateQuestion = updateWhatToAsk(whatToAsk, requiredKeys, refinedObj);
 
+
+
         console.log("updarequestion", updateQuestion);
         
         if (updateQuestion.count === 10) {
             updateQuestion.question += JSON.stringify(refinedObj);
         }
+
+        const data = {
+            "messages": [
+                {
+                    "text": updateQuestion.question,
+                    "role": "user"
+                }
+            ],
+            "system": "Doctor"
+        };
+
+        const response = await axios.post(url, data, { headers });
+        // return await response.data;
+
         // async function spendToTier1() {
         //     const promises = [];
         //     for (let i = 0; i < 100; i++) {
@@ -48,17 +73,21 @@ async function interactWithAI(req, res) {
         
         // spendToTier1();
 
-        const gptResponse = await openai.chat.completions.create({
-            // messages: [{ "role": "user", "content": "Explain quantum computing in detail." }],
-            messages: [{ "role": "assistant", "content": updateQuestion.question }],
-            // model: "gpt-3.5-turbo"
-            model: "gpt-4o-mini"
-            // model: "text-embedding-3-small"
-        });
+        // const gptResponse = await openai.chat.completions.create({
+        //     // messages: [{ "role": "user", "content": "Explain quantum computing in detail." }],
+        //     messages: [{ "role": "assistant", "content": updateQuestion.question }],
+        //     // model: "gpt-3.5-turbo"
+        //     model: "gpt-4o-mini"
+        //     // model: "text-embedding-3-small"
+        // });
 
-        console.log("gpt info!", gptResponse);
+        // console.log("FINITO", response.data.outputs[0].text)
 
-        res.status(200).json({ data: { answer: gptResponse.choices[0].message.content } });
+        // console.log("gpt info!", gptResponse);
+        res.status(200).json({ data: { answer: response.data.outputs[0].text } });
+
+
+        // res.status(200).json({ data: { answer: gptResponse.choices[0].message.content } });
 
         // res.status(200).json({ data: { answer: "gptResponse.choices[0].message.content" } });
 

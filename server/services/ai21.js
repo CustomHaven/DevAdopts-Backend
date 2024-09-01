@@ -23,9 +23,8 @@ const data = {
 };
 
 const ai21 = async () => {
-  const response = await axios.post(url, data, { headers });
-  return await response.data;
-
+    const response = await axios.post(url, data, { headers });
+    return await response.data;
 }
 
 
