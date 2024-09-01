@@ -1,9 +1,58 @@
 const { Router } = require("express");
 const authenticator = require("../middleware/authenticator");
 const usersController = require("../controllers/userController");
+const adminAuth = require("../middleware/adminAuth");
 
 const userRouter = Router();
 
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Operations related to Users API
+ * /Users/logout:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Logout the User
+ *     description: Logout a User from the server.
+ *     operationId: logout_user
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Logout successfully. Please remove the token from your client-side storage."
+ *       400:
+ *         description: Bad Request, token missing or invalid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Bad Request"
+ *       401:
+ *         description: Unauthorized, token missing or invalid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized"
+ */
+userRouter.get("/logout", authenticator, usersController.logout);
 
 
 /**
@@ -101,6 +150,58 @@ userRouter.post("/login", usersController.login);
  * tags:
  *   name: Users
  *   description: Operations related to users API
+ * /users/create-admin:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Creates an admin user
+ *     description: Adds a new admin user to the system. This action requires administrative privileges. Ensure that the request includes a valid JWT token with admin rights.
+ *     operationId: create_admin
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/User"
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: "#/components/schemas/User"
+ *       400:
+ *         description: Bad request - Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid input data"
+ *       403:
+ *         description: Forbidden, user does not have administrative privileges
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Forbidden, user does not have administrative privileges"
+ */
+userRouter.post("/create-admin", adminAuth, usersController.createAdmin);
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Operations related to users API
  * /users/{id}:
  *   get:
  *     tags:
@@ -127,6 +228,16 @@ userRouter.post("/login", usersController.login);
  *               properties:
  *                 data:
  *                   $ref: "#/components/schemas/User"
+ *       401:
+ *         description: Unauthorized, token missing or invalid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized"
  *       404:
  *         description: User not found
  *         content:
@@ -138,7 +249,7 @@ userRouter.post("/login", usersController.login);
  *                   type: string
  *                   example: "User not found"
  */
-userRouter.get("/:id", usersController.show);
+userRouter.get("/:id", authenticator, usersController.show);
 
 /**
  * @swagger
@@ -150,7 +261,7 @@ userRouter.get("/:id", usersController.show);
  *     tags:
  *       - Users
  *     summary: Delete a User's information
- *     description: Delete's a User from the record.
+ *     description: Delete's a User from the record. This action requires administrative privileges. Ensure that the request includes a valid JWT token with admin rights.
  *     operationId: delete_user
  *     security:
  *       - BearerAuth: []
@@ -174,6 +285,16 @@ userRouter.get("/:id", usersController.show);
  *                 error:
  *                   type: string
  *                   example: "Unauthorised"
+ *       403:
+ *         description: Forbidden, user does not have administrative privileges
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Forbidden, user does not have administrative privileges"
  *       404:
  *         description: User not found
  *         content:
@@ -185,6 +306,6 @@ userRouter.get("/:id", usersController.show);
  *                   type: string
  *                   example: "User not found"
  */
-userRouter.delete("/:id", authenticator, usersController.destroy);
+userRouter.delete("/:id", adminAuth, usersController.destroy);
 
 module.exports = userRouter;

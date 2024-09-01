@@ -72,6 +72,24 @@ const swaggerDefinition = {
                     admin: { type: "boolean", example: false },
                     password: { type: "string", example: "password123" }
                 }
+            },
+            Bot: {
+                type: "object",
+                required: [ "small_animals", "young_children", "activity", "living_space_size", "garden", "allergy_information", "other_animals", "fencing", "previous_experience_years", "annual_income" ],
+                properties: {
+                    preference_id: { type: "integer", example: 1 },
+                    small_animals: { type: "string", example: null },
+                    young_children: { type: "string", example: null },
+                    activity: { type: "string", example: null },
+                    living_space_size: { type: "string", example: null },
+                    garden: { type: "string", example: null },
+                    allergy_information: { type: "string", example: null },
+                    other_animals: { type: "string", example: null },
+                    fencing: { type: "string", example: null },
+                    previous_experience_years: { type: "string", example: null },
+                    annual_income: { type: "string", example: null },
+                    user_id: { type: "integer", example: 1 }
+                }
             }
         },
     },

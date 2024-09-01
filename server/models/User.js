@@ -56,6 +56,25 @@ class User {
     return new User(response.rows[0]);
   }
 
+  static async createAdmin(data) {
+    const {
+      first_name,
+      last_name,
+      email,
+      username,
+      password,
+      post_code
+    } = data;
+    let response = await db.query(
+      "INSERT INTO users (first_name, last_name, email, username, password, post_code, admin) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;",
+      [first_name, last_name, email, username, password, post_code, true]
+    );
+    if (response.rows.length !== 1) {
+      throw new Error(" Result entry already exists.");
+    }
+    return new User(response.rows[0]);
+  }
+
   static async getOneById(id) {
     const response = await db.query("SELECT * FROM users WHERE user_id = $1;", [
       id,
