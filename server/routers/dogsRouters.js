@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const authenticator = require("../middleware/authenticator");
+const adminAuth = require("../middleware/adminAuth");
 const dogsController = require("../controllers/dogsController");
 
 const dogsRouter = Router();
@@ -31,7 +31,7 @@ const dogsRouter = Router();
  *                     -  $ref: "#/components/schemas/Dog"
  *                     -  $ref: "#/components/schemas/Dog"
  */
-dogsRouter.get("/", authenticator, dogsController.index);
+dogsRouter.get("/", dogsController.index);
 
 
 /**
@@ -44,7 +44,7 @@ dogsRouter.get("/", authenticator, dogsController.index);
  *     tags:
  *       - Dogs
  *     summary: Create a new dog entry
- *     description: Adds a new dog to the system. Requires a valid request body with all required fields.
+ *     description: Adds a new dog to the system. This action requires administrative privileges. Ensure that the request includes a valid JWT token with admin rights.
  *     operationId: create_new_dog
  *     security:
  *       - BearerAuth: []
@@ -64,6 +64,16 @@ dogsRouter.get("/", authenticator, dogsController.index);
  *               properties:
  *                 data:
  *                   $ref: "#/components/schemas/Dog"
+ *       403:
+ *         description: Forbidden, user does not have administrative privileges
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Forbidden, user does not have administrative privileges"
  *       400:
  *         description: Bad request - Invalid input
  *         content:
@@ -75,7 +85,7 @@ dogsRouter.get("/", authenticator, dogsController.index);
  *                   type: string
  *                   example: "Invalid input data"
  */
-dogsRouter.post("/", authenticator, dogsController.create);
+dogsRouter.post("/", adminAuth, dogsController.create);
 
 /**
  * @swagger
@@ -129,7 +139,7 @@ dogsRouter.get("/:id", dogsController.show);
  *     tags:
  *       - Dogs
  *     summary: Update a dog's information
- *     description: Updates the specified fields of a dog record.
+ *     description: Updates the specified fields of a dog record. This action requires administrative privileges. Ensure that the request includes a valid JWT token with admin rights.
  *     operationId: update_dog
  *     security:
  *       - BearerAuth: []
@@ -166,6 +176,16 @@ dogsRouter.get("/:id", dogsController.show);
  *                 error:
  *                   type: string
  *                   example: "Invalid input data"
+ *       403:
+ *         description: Forbidden, user does not have administrative privileges
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Forbidden, user does not have administrative privileges"
  *       404:
  *         description: Dog not found
  *         content:
@@ -177,7 +197,7 @@ dogsRouter.get("/:id", dogsController.show);
  *                   type: string
  *                   example: "Dog not found"
  */
-dogsRouter.patch("/:id", authenticator, dogsController.update);
+dogsRouter.patch("/:id", adminAuth, dogsController.update);
 
 /**
  * @swagger
@@ -189,7 +209,7 @@ dogsRouter.patch("/:id", authenticator, dogsController.update);
  *     tags:
  *       - Dogs
  *     summary: Delete a dog's information
- *     description: Delete's a dog from the record.
+ *     description: Delete's a dog from the record. This action requires administrative privileges. Ensure that the request includes a valid JWT token with admin rights.
  *     operationId: delete_dog
  *     security:
  *       - BearerAuth: []
@@ -213,6 +233,16 @@ dogsRouter.patch("/:id", authenticator, dogsController.update);
  *                 error:
  *                   type: string
  *                   example: "Unauthorised"
+ *       403:
+ *         description: Forbidden, user does not have administrative privileges
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Forbidden, user does not have administrative privileges"
  *       404:
  *         description: Dog not found
  *         content:
@@ -224,6 +254,6 @@ dogsRouter.patch("/:id", authenticator, dogsController.update);
  *                   type: string
  *                   example: "Dog not found"
  */
-dogsRouter.delete("/:id", authenticator, dogsController.destroy);
+dogsRouter.delete("/:id", adminAuth, dogsController.destroy);
 
 module.exports = dogsRouter;

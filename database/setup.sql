@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS blacklisted_tokens;
 DROP TABLE IF EXISTS user_dog;
 DROP TABLE IF EXISTS initial_adoption_cost;
 DROP TABLE IF EXISTS monthly_adoption_cost;
@@ -168,6 +169,14 @@ CREATE TABLE user_dog (
     PRIMARY KEY (user_dog_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (dog_id) REFERENCES dogs(dog_id) ON DELETE CASCADE
+);
+
+CREATE TABLE blacklisted_tokens (
+    blacklist_id INT GENERATED ALWAYS AS IDENTITY,
+    token TEXT NOT NULL UNIQUE,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    PRIMARY KEY (blacklist_id)
 );
 
 -- CREATE TABLE bed_size (
