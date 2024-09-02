@@ -32,7 +32,7 @@ pipeline {
                 echo "looking in blog_db"
                 sh """
                     ls
-                    cd blog_db
+                    cd server
                     ls
                 """
                 echo "AWS_SECRET_ACCESS_KEY is set"
