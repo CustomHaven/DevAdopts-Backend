@@ -16,6 +16,7 @@ pipeline {
             steps {
                 dir("server") {
                     withCredentials([file(credentialsId: "DevAdopts_ENV", "ENV_FILE_MVC")]) {
+                        echo "INSIDE CREDENTIALS"
                         sh "ls"
                         sh "cp ${ENV_FILE_MVC} .env"
                         echo "Checking NPM version"
@@ -25,8 +26,7 @@ pipeline {
                         sh "ls"
                         sh "cat test.txt"
                         sh "ls"
-                        // Not needed but we keep it incase
-                        // Because Jenkins will judge the entire pipeline if the test is Failure
+
                         script {
                             def testResult = sh(script: "grep 'FAIL' test.txt", returnStatus: true)
                             if (testResult == 0) {
@@ -41,6 +41,7 @@ pipeline {
             steps {
                 dir("server") {
                     withCredentials([file(credentialsId: "DevAdopts_ENV", "ENV_FILE_MVC")]) {
+                        echo "INSIDE CREDENTIALS"
                         echo "Its important that the env is downloaded in here as .env file"
                         sh "cp ${ENV_FILE_MVC} .env"
                         echo "Remember to delete it in the end!"
