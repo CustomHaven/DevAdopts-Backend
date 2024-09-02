@@ -1,0 +1,106 @@
+pipeline {
+    agent any
+    // parameters{
+        // booleanParam(name: "APPLY_IAAC", defaultValue: false, description: "Build IAAC")
+    // }
+    environment {
+        AWS_ACCESS_KEY_ID = credentials("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = credentials("AWS_SECRET_ACCESS_KEY")
+        AWS_KEY_PAIR = credentials("AWS_PEM_ID")
+        AWS_REGION = "eu-west-2"
+    }
+    stages {
+        stage("Setup Backend") {
+            steps {
+                dir("terraform/backend-state") {
+                    sh "terraform init"
+                    sh "terraform apply -auto-approve"
+                }
+            }
+        }
+        stage("Terraform Init") {
+            steps {
+                sh "pwd"
+                sh """
+                pwd
+                cd ~/
+                pwd
+                ls -a
+                """
+                dir("terraform") {
+                    sh "pwd"
+                    sh "terraform init"
+                }
+            }
+        }
+        stage("Terraform Validate") {
+            steps {
+                dir("terraform") {
+                    sh "terraform validate"
+                }
+            }
+        }
+        stage("Terraform Plan") {
+            steps {
+                echo "Looking if plan wille execute"
+                dir("terraform") {
+                    echo "Ensure the private key file is available"
+                    withCredentials([file(credentialsId: 'AWS_PEM_ID', variable: "AWS_KEY_PAIR_FILE")]) {
+                        sh '''
+                            pwd
+                            ls -l $AWS_KEY_PAIR_FILE
+                            pwd
+
+                            echo Run terraform plan with the private key
+                            terraform plan -var="aws_key_pair=${AWS_KEY_PAIR_FILE}"
+                        '''
+                    }
+                }
+            }
+        }
+        stage("Terraform Apply") {
+            // when {
+            //     expression { return params.APPLY_IAAC }
+            // }
+            steps {
+                echo "About to see if apply works"
+                dir("terraform") {
+                    echo "Ensure the private key file is available"
+                    withCredentials([file(credentialsId: "AWS_PEM_ID", variable: "AWS_KEY_PAIR_FILE")]) {
+                        sh '''
+                            ls -l $AWS_KEY_PAIR_FILE
+
+                            echo Run terraform destroy with the private key
+                            terraform destroy -var="aws_key_pair=${AWS_KEY_PAIR_FILE}" -auto-approve
+                        '''
+                    }
+                }
+            }
+        }
+        stage("Terraform Destroy") {
+            steps {
+                echo "Must destroy resources"
+                dir("terraform") {
+                    echo "key to destroy starts here"
+                    withCredentials([file(credentialsId: "AWS_PEM_ID", variable: "AWS_KEY_PAIR_FILE")]) {
+                        sh '''
+                            ls -l $AWS_KEY_PAIR_FILE
+
+                        '''
+                    }
+                }
+            }
+        }
+    }
+    post {
+		always {
+			echo "I always run"
+		}
+		success {
+			echo "I run when successful"
+		}
+		failure {
+            echo "I run when failed"
+		}
+	}
+}
