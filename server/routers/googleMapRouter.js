@@ -5,6 +5,8 @@ const googleMapController = require("../controllers/googleMapController");
 const googleMapRouter = Router();
 
 
+googleMapRouter.get("/reference", googleMapController.index);
+
 /**
  * @swagger
  * tags:

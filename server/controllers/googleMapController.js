@@ -1,5 +1,9 @@
 const axios = require("axios");
 
+const index = (req, res) => {
+    res.status.json({ data: process.env.GOOGLE_MAPS_API_KEY });
+}
+
 const show = async (req, res) => {
     try {
         const postcode = req.query.postcode;
@@ -17,4 +21,4 @@ const show = async (req, res) => {
     }
 };
 
-module.exports = { show };
+module.exports = { show, index };

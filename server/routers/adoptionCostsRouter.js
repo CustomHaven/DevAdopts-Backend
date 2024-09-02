@@ -95,6 +95,6 @@ const adoptionCostsRouter = Router();
  *                   type: string
  *                   example: "Internal Server Error"
  */
-adoptionCostsRouter.get("/:dogId", adminAuth, adoptionCostsController.getAdoptionCosts);
+adoptionCostsRouter.get("/:dogId", adoptionCostsController.getAdoptionCosts);
 
 module.exports = adoptionCostsRouter;

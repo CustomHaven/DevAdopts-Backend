@@ -195,7 +195,7 @@ userRouter.post("/login", usersController.login);
  *                   type: string
  *                   example: "Forbidden, user does not have administrative privileges"
  */
-userRouter.post("/create-admin", adminAuth, usersController.createAdmin);
+userRouter.post("/create-admin", usersController.createAdmin);
 
 
 /**
@@ -250,7 +250,7 @@ userRouter.post("/create-admin", adminAuth, usersController.createAdmin);
  *                   type: string
  *                   example: "User not found"
  */
-userRouter.get("/:id", authenticator, usersController.show);
+userRouter.get("/:id",  usersController.show);
 
 /**
  * @swagger

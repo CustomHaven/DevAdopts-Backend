@@ -1,4 +1,9 @@
 const db = require("../db/connect");
+const InitialAdoption = require("./InitialAdoption");
+const MonthlyAdoption = require("./MonthlyAdoption");
+const LongTermAdoption = require("./LongTermAdoption");
+const { calculateAdoptionCosts } = require("../utils/adoptionCalculator");
+const { getCostsBySize } = require("../models/adoptionCosts")
 
 class Dog {
     constructor(dog) {
@@ -26,6 +31,36 @@ class Dog {
         this.collar_leash = dog.collar_leash;
         this.obedience_classes_needed = dog.obedience_classes_needed;
         this.timestamp = (dog.timestamp instanceof Date ? dog.timestamp : new Date(dog.timestamp)).toISOString().replace(/T/, " ").replace(/\..+/, "");
+
+        if (dog.associates) {
+            this.InitialAdoption = dog.associates.InitialAdoption;
+            this.MonthlyAdoption = dog.associates.MonthlyAdoption;
+            this.LongTermAdoption = dog.associates.LongTermAdoption;
+        }
+    }
+
+    static async populateAssociations(dog_id) {
+        // Gather the adoption plans
+        let initial, monthly, lta;
+        initial = await InitialAdoption.show(dog_id);
+        if (initial.error) {
+            await calculateAdoptionCosts(dog_id, Dog, InitialAdoption, MonthlyAdoption, LongTermAdoption, getCostsBySize);
+        }
+        
+        initial = await InitialAdoption.show(dog_id);
+        monthly = await MonthlyAdoption.show(dog_id);
+        lta = await LongTermAdoption.show(dog_id);
+
+        // Gather the adoption plans additional assoiciated costs
+        const initialPopulated = await initial.populateAssociations();
+        const monthlyPopulated = await monthly.populateAssociations();
+        const ltaPopulated = await lta.populateAssociations();
+
+        return {
+            InitialAdoption: initialPopulated,
+            MonthlyAdoption: monthlyPopulated,
+            LongTermAdoption: ltaPopulated
+        }
     }
 
     static async getAll() {
@@ -33,7 +68,13 @@ class Dog {
         if (dog.rows.length === 0) {
             throw new Error("No dogs available");
         }
-        return dog.rows.map(b => new Dog(b))
+        return await Promise.all(dog.rows.map(async b => {
+            const associates = await Dog.populateAssociations(b.dog_id);
+            const ob = {
+                ...b, associates: { ...associates }
+            }
+            return new Dog(ob);
+        }));
     }
 
     static async show(id) {
@@ -41,7 +82,12 @@ class Dog {
         if (response.rows.length !== 1) {
             throw new Error("No dog found");
         }
-        return new Dog(response.rows[0]);
+        const associates = await Dog.populateAssociations(id);
+
+        const obj = {
+            ...response.rows[0], associates: { ...associates }
+        }
+        return new Dog(obj);
     }
 
     static async create(data) {

@@ -1,5 +1,5 @@
 const whatToAsk = `
-Do not assume my gender or name. Please just ask me straight away from the list below starting from the first (-). Also dont start off with Sure lets get started or something similar, and also dont put a number before the question! Ask me question around these things below 1 by 1 and in chronological order starting from the first (-) and only ask me 1 question at a time:
+Do not assume my gender or name. Please just ask me straight away from the list below starting from the first dash you see. Also dont start off with Sure lets get started or something similar, and also dont put a number before the question! Ask me question around these things below 1 by 1 and in chronological order starting from the first dash and only ask me 1 question at a time:
 
 - small_animals (Ask if they got small animals? true/false),
 - young_children (Ask if they got young children),
