@@ -16,31 +16,7 @@ pipeline {
         stage("Checkout") {
             steps {
                 sh "pwd"
-                echo "Docker Home"
-                sh "docker --version"
-                echo "We have node"
-                sh "node --version"
-                echo "We have npm"
-                sh "npm --version"
-                echo "checking if terraform version is working"
-                sh "terraform --version"
-                echo "Will kuberenetes WORK"
-                sh "kubectl version --client"
-                echo "AWS in our system"
-                sh "aws --version"
-                echo "Azure found"
-                sh "az --version"
-                echo "GCP found"
-                sh "gcloud --version"
-                echo "ansible found"
-                sh "ansible --version"
-                echo "Path: $Path"
-                echo "Build Number: $env.BUILD_NUMBER"
-                echo "Build ID: $env.BUILD_ID"
-                echo "Build URL: $env.BUILD_URL"
-                echo "Build Tag: $env.BUILD_TAG"
-                echo "Job Name: $env.JOB_NAME"
-                echo "final test"
+                sh "git --version"
             }
         }
         stage("Build") {
