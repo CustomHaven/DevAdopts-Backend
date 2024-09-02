@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        booleanParam(name: "RUN_BUILD_APP", defaultValue: false, description: "Run Build APP Stage")
+        booleanParam(name: "RUN_BUILD_APP", defaultValue: true, description: "Run Build APP Stage")
         booleanParam(name: "RUN_DOCKER_MVC", defaultValue: false, description: "Run Docker MVC Pipeline")
         booleanParam(name: "RUN_DOCKER_DB", defaultValue: false, description: "Run Docker DB Pipeline")
         booleanParam(name: "RUN_INFRASTRUCTURE", defaultValue: false, description: "Run Infrastructure")
