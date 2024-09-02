@@ -15,20 +15,23 @@ pipeline {
         stage("Test App") {
             steps {
                 dir("server") {
-                    sh "ls"
-                    echo "Checking NPM version"
-                    sh "npm --version"
-                    echo "starting the testing"
-                    sh "npm run pipeline-test"
-                    sh "ls"
-                    sh "cat test.txt"
-                    sh "ls"
-                    // Not needed but we keep it incase
-                    // Because Jenkins will judge the entire pipeline if the test is Failure
-                    script {
-                        def testResult = sh(script: "grep 'FAIL' test.txt", returnStatus: true)
-                        if (testResult == 0) {
-                            error("Tests failed! Marking the pipeline as failed.")
+                    withCredentials([file(credentialsId: "DevAdopts_ENV", "ENV_FILE_MVC")]) {
+                        sh "ls"
+                        sh "cp ${ENV_FILE_MVC} .env"
+                        echo "Checking NPM version"
+                        sh "npm --version"
+                        echo "starting the testing"
+                        sh "npm run pipeline-test"
+                        sh "ls"
+                        sh "cat test.txt"
+                        sh "ls"
+                        // Not needed but we keep it incase
+                        // Because Jenkins will judge the entire pipeline if the test is Failure
+                        script {
+                            def testResult = sh(script: "grep 'FAIL' test.txt", returnStatus: true)
+                            if (testResult == 0) {
+                                error("Tests failed! Marking the pipeline as failed.")
+                            }
                         }
                     }
                 }
@@ -37,39 +40,45 @@ pipeline {
         stage("App Test Coverage") {
             steps {
                 dir("server") {
-                    sh "ls"
-                    sh "npm --version"
-                    echo "Starting Coverage Test Result"
-
-                    // Run Jest with coverage and save output to coverage.txt
-                    sh "npm run pipeline-coverage"
-                    echo "check if coverage is added"
-                    sh "ls"
-                    script {
-                        // Extract the functions coverage percentage from coverage.txt
-                        def funcsCoveragePercentage = sh(
-                            script: """
-                                grep 'All files' coverage.txt | awk -F '|' '{print \$5}' | tr -d '%'
-                            """,
-                            returnStdout: true
-                        ).trim()
-
-                        // Check if the coverage percentage was extracted correctly
-                        if (funcsCoveragePercentage == "") {
-                            error("Failed to extract functions coverage percentage from coverage.txt")
-                        }
-
-                        echo "Total Functions Coverage Percentage: ${funcsCoveragePercentage}%"
-
+                    withCredentials([file(credentialsId: "DevAdopts_ENV", "ENV_FILE_MVC")]) {
+                        echo "Its important that the env is downloaded in here as .env file"
+                        sh "cp ${ENV_FILE_MVC} .env"
+                        echo "Remember to delete it in the end!"
+                        sh "cat .env"
                         sh "ls"
+                        sh "npm --version"
+                        echo "Starting Coverage Test Result"
 
-                        // Convert to a number and check if it's below 60
-                        def coverageValue = funcsCoveragePercentage.toFloat()
-                        if (coverageValue < 30) { // change to 60% when I build more tests
-                            error("Functions coverage is below 60%. Failing the pipeline.")
-                        } else {
-                            echo "Functions coverage is sufficient. Proceeding with the pipeline."
-                        }
+                        // Run Jest with coverage and save output to coverage.txt
+                        sh "npm run pipeline-coverage"
+                        echo "check if coverage is added"
+                        sh "ls"
+                        script {
+                            // Extract the functions coverage percentage from coverage.txt
+                            def funcsCoveragePercentage = sh(
+                                script: """
+                                    grep 'All files' coverage.txt | awk -F '|' '{print \$5}' | tr -d '%'
+                                """,
+                                returnStdout: true
+                            ).trim()
+
+                            // Check if the coverage percentage was extracted correctly
+                            if (funcsCoveragePercentage == "") {
+                                error("Failed to extract functions coverage percentage from coverage.txt")
+                            }
+
+                            echo "Total Functions Coverage Percentage: ${funcsCoveragePercentage}%"
+
+                            sh "ls"
+
+                            // Convert to a number and check if it's below 60
+                            def coverageValue = funcsCoveragePercentage.toFloat()
+                            if (coverageValue < 30) { // change to 60% when I build more tests
+                                error("Functions coverage is below 60%. Failing the pipeline.")
+                            } else {
+                                echo "Functions coverage is sufficient. Proceeding with the pipeline."
+                            }
+                        }                        
                     }
                 }
             }
@@ -101,6 +110,11 @@ pipeline {
                     def coverageExist = sh(script: "grep 'coverage' ls.txt", returnStatus: true) == 0
                     if (coverageExist) {
                         sh "rm -rf coverage"
+                    }
+
+                    def envExist = sh(script: "grep '.env' ls.txt", returnStatus: true) == 0
+                    if (envExist) {
+                        sh "rm .env"
                     }
                 }
                 sh "ls"
