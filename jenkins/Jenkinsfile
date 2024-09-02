@@ -1,16 +1,21 @@
 pipeline {
     agent any
     environment {
-        gitHome = tool "Default"
-        nodeHome = tool "myNodeJs"
+        AWS_ACCESS_KEY_ID = credentials("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = credentials("AWS_SECRET_ACCESS_KEY")
+        AWS_KEY_PAIR = credentials("AWS_PEM_ID")
+        AWS_REGION = "eu-west-2"
         dockerHome = tool "myDocker"
-        PATH = "$gitHome/bin:$dockerHome/bin:$nodeHome/bin:$PATH"
+		nodeHome = tool "myNodeJS"
+        groovyHome = tool "groovy"
+		PATH = "$dockerHome/bin:$nodeHome/bin:$groovyHome/bin:$PATH"
+        REMOTE_TRIGGER_TOKEN = "remote_access_to_pipeline"  // Use the same token
     }
     stages {
         stage("Checkout") {
             steps {
                 sh "pwd"
-                sh "git --version"
+                sh "node --version"
             }
         }
         stage("Build") {
