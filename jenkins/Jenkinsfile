@@ -98,6 +98,23 @@ pipeline {
                 }
             }
         }
+        stage("Docker MVC Pipeline") {
+            when {
+                expression { return params.RUN_DOCKER_MVC }
+                // expression { return params.PIPELINES_TO_RUN.contains("Docker_MVC") }
+            }
+            steps {
+                script {
+                    echo "Triggering Docker MVC Pipeline"
+                    build job: "DevAdopt-MVC-Microservice-Pipeline", 
+                        propagate: true, 
+                        token: env.REMOTE_TRIGGER_TOKEN,
+                        parameters: [
+                            string(name: "BUILD_ID", value: env.BUILD_ID)
+                        ]
+                }
+            }
+        }
     }
     post {
 		always {
