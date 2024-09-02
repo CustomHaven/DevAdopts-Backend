@@ -5,6 +5,8 @@ const User = require("../models/User");
 async function adminAuth(req, res, next) {
   const authHeader = req.headers.authorization;
 
+  console.log("in adminAuth", authHeader);
+
   if (!authHeader) {
     return res.status(401).json({ err: "Missing token" });
   }
@@ -21,7 +23,8 @@ async function adminAuth(req, res, next) {
       if (err) {
         return res.status(401).json({ err: "Invalid token" });
       } else {
-        const user = await User.show(data.userId);
+        console.log("checking authdata", data);
+        const user = await User.getOneByEmail(data.username);
         if (!user || user.admin !== data.admin) {
           return res.status(403).json({ err: "Forbidden" });
         }

@@ -14,13 +14,15 @@ const googleMapRouter = require("./routers/googleMapRouter");
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:4728"],
+  origin: ["http://localhost:4728", "http://localhost:4000"],
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTION"],
   allowedHeaders: ["Content-Type", "Accept", "Authorization"],
   credentials: true,
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
+
 app.use(express.json());
 app.use(logger);
 
