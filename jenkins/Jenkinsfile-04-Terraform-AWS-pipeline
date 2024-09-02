@@ -1,8 +1,9 @@
 pipeline {
     agent any
-    // parameters{
+    parameters{
         // booleanParam(name: "APPLY_IAAC", defaultValue: false, description: "Build IAAC")
-    // }
+        booleanParam(name: "DESTROY_IAAC", defaultValue: false, description: "DESTROY IAAC")
+    }
     environment {
         AWS_ACCESS_KEY_ID = credentials("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = credentials("AWS_SECRET_ACCESS_KEY")
@@ -77,20 +78,23 @@ pipeline {
                 }
             }
         }
-        // stage("Terraform Destroy") {
-        //     steps {
-        //         echo "Must destroy resources"
-        //         dir("terraform") {
-        //             echo "key to destroy starts here"
-        //             withCredentials([file(credentialsId: "AWS_PEM_ID", variable: "AWS_KEY_PAIR_FILE")]) {
-        //                 sh '''
-        //                     ls -l $AWS_KEY_PAIR_FILE
+        stage("Terraform Destroy") {
+            when {
+                expression { return params.DESTROY_IAAC }
+            }
+            steps {
+                echo "Must destroy resources"
+                dir("terraform") {
+                    echo "key to destroy starts here"
+                    withCredentials([file(credentialsId: "AWS_PEM_ID", variable: "AWS_KEY_PAIR_FILE")]) {
+                        sh '''
+                            ls -l $AWS_KEY_PAIR_FILE
 
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
+                        '''
+                    }
+                }
+            }
+        }
     }
     post {
 		always {
