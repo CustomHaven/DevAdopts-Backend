@@ -43,6 +43,12 @@ pipeline {
                 echo "final test"
             }
         }
+        stage("Build") {
+            steps {
+                sh "pwd"
+                echo "REACHED?!"
+            }
+        }
     }
     post {
 		always {
