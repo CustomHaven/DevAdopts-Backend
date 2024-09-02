@@ -7,10 +7,10 @@ pipeline {
         booleanParam(name: "RUN_INFRASTRUCTURE", defaultValue: false, description: "Run Infrastructure")
     }
     environment {
-        gitHome = tool "Default"
+        // gitHome = tool "Default"
         nodeHome = tool "myNodeJs"
         dockerHome = tool "myDocker"
-        PATH = "$gitHome/bin:$dockerHome/bin:$nodeHome/bin:$PATH"
+        PATH = "$dockerHome/bin:$nodeHome/bin:$PATH"
     }
     stages {
         stage("Checkout") {
