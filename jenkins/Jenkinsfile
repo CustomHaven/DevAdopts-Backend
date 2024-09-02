@@ -92,6 +92,9 @@ pipeline {
                     build job: "DevAdopt-DB-Image-Pipeline"
                         propagate: true,
                         token: env.REMOTE_TRIGGER_TOKEN
+                        parameters: [
+                            string(name: "BUILD_TAG", value: env.BUILD_TAG)
+                        ]
                 }
             }
         }
