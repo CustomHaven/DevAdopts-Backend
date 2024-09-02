@@ -15,7 +15,7 @@ pipeline {
         stage("Test App") {
             steps {
                 dir("server") {
-                    withCredentials([file(credentialsId: "DevAdopts_ENV", "ENV_FILE_MVC")]) {
+                    withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
                         echo "INSIDE CREDENTIALS"
                         sh "ls"
                         sh "cp ${ENV_FILE_MVC} .env"
@@ -40,7 +40,7 @@ pipeline {
         stage("App Test Coverage") {
             steps {
                 dir("server") {
-                    withCredentials([file(credentialsId: "DevAdopts_ENV", "ENV_FILE_MVC")]) {
+                    withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
                         echo "INSIDE CREDENTIALS"
                         echo "Its important that the env is downloaded in here as .env file"
                         sh "cp ${ENV_FILE_MVC} .env"
