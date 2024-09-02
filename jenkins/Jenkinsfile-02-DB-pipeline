@@ -9,6 +9,7 @@ pipeline {
                 dir("database") {
                     script {
                         echo "INSIDE THE DB PIPELINE"
+                        echo "Received Build Tag: ${params.BUILD_TAG}"
                         sh "ls"
                         dockerImage = docker.image("customhaven/devadopt-db:${params.BUILD_TAG}")
                     }
