@@ -1,9 +1,9 @@
 pipeline {
     agent any
     parameters {
-        booleanParam(name: "RUN_BUILD_APP", defaultValue: true, description: "Run Build APP Stage")
+        booleanParam(name: "RUN_BUILD_APP", defaultValue: false, description: "Run Build APP Stage")
         booleanParam(name: "RUN_DOCKER_MVC", defaultValue: false, description: "Run Docker MVC Pipeline")
-        booleanParam(name: "RUN_DOCKER_DB", defaultValue: false, description: "Run Docker DB Pipeline")
+        booleanParam(name: "RUN_DOCKER_DB", defaultValue: true, description: "Run Docker DB Pipeline")
         booleanParam(name: "RUN_INFRASTRUCTURE", defaultValue: false, description: "Run Infrastructure")
     }
     environment {
@@ -78,6 +78,19 @@ pipeline {
                     build job: "DevAdopt-Build-App-Pipeline",
                         propagate: true,
                         // wait: true,
+                        token: env.REMOTE_TRIGGER_TOKEN
+                }
+            }
+        }
+        stage("Database Docker Image") {
+            when {
+                expression { return params.RUN_DOCKER_DB }
+            }
+            steps {
+                script {
+                    echo "Building the Docker Image for the Postgres Database"
+                    build job: "DevAdopt-DB-Image-Pipeline"
+                        propagate: true,
                         token: env.REMOTE_TRIGGER_TOKEN
                 }
             }

@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: "BUILD_TAG", defaultValue: "", description: "The build tag from the triggering pipeline")
+    }
+    stages {
+        stage("Build Docker DB Image") {
+            steps {
+                dir("database") {
+                    script {
+                        echo "INSIDE THE DB PIPELINE"
+                        sh "ls"
+                        dockerImage = docker.image("customhaven/devadopt-db:${params.BUILD_TAG}")
+                    }
+                }
+            }
+        }
+        stage("Push Docker DB Image") {
+            steps {
+				script {
+					docker.withRegistry("", "dockerhub") {
+						dockerImage.push()
+						dockerImage.push("${params.BUILD_TAG}")
+					}
+				}
+            }
+        }
+        stage("Verify Image") {
+            steps {
+                script {
+                    sh "docker images"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo "I always run"
+        }
+        success {
+            echo "I run when successful"
+        }
+        failure {
+            echo "I run when failed"
+        }
+    }
+}
