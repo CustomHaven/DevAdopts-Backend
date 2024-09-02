@@ -38,6 +38,7 @@ pipeline {
             echo "Build URL: $env.BUILD_URL"
             echo "Build Tag: $env.BUILD_TAG"
             echo "Job Name: $env.JOB_NAME"
+            echo "final test"
         }
     }
     post {
