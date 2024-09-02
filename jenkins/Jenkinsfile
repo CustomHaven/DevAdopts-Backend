@@ -1,5 +1,11 @@
 pipeline {
     agent any
+    parameters {
+        booleanParam(name: "RUN_BUILD_APP", defaultValue: false, description: "Run Build APP Stage")
+        booleanParam(name: "RUN_DOCKER_MVC", defaultValue: false, description: "Run Docker MVC Pipeline")
+        booleanParam(name: "RUN_DOCKER_DB", defaultValue: false, description: "Run Docker DB Pipeline")
+        booleanParam(name: "RUN_INFRASTRUCTURE", defaultValue: false, description: "Run Infrastructure")
+    }
     environment {
         AWS_ACCESS_KEY_ID = credentials("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = credentials("AWS_SECRET_ACCESS_KEY")
@@ -9,19 +15,71 @@ pipeline {
 		nodeHome = tool "myNodeJS"
         groovyHome = tool "groovy"
 		PATH = "$dockerHome/bin:$nodeHome/bin:$groovyHome/bin:$PATH"
-        REMOTE_TRIGGER_TOKEN = "remote_access_to_pipeline"  // Use the same token
+        REMOTE_TRIGGER_TOKEN =  credentials("REMOTE_TRIGGER_TOKEN")
     }
     stages {
         stage("Checkout") {
             steps {
                 sh "pwd"
+                sh """
+                    pwd
+                    ls
+                    cd ../
+                    pwd
+                    ls
+                    ls -a
+                """
+                echo "looking in blog_db"
+                sh """
+                    ls
+                    cd blog_db
+                    ls
+                """
+                echo "AWS_SECRET_ACCESS_KEY is set"
+                sh "echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
+                echo "AWS_ACCESS_KEY_ID"
+                sh "echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
+                echo "Remote access"
+                sh "echo REMOTE_TRIGGER_TOKEN=$REMOTE_TRIGGER_TOKEN"
+                echo "Docker Home"
+                sh "docker --version"
+                echo "We have node"
                 sh "node --version"
+                echo "We have npm"
+                sh "npm --version"
+                echo "checking if terraform version is working"
+                sh "terraform --version"
+                echo "Will kuberenetes WORK!?"
+                sh "kubectl version --client"
+                echo "AWS in our system?"
+                sh "aws --version"
+                echo "Azure found?!"
+                sh "az --version"
+                echo "GCP found"
+                sh "gcloud --version"
+                echo "ansible found"
+                sh "ansible --version"
+                echo "Path: $Path"
+				echo "Build Number: $env.BUILD_NUMBER"
+				echo "Build ID: $env.BUILD_ID"
+				echo "Build URL: $env.BUILD_URL"
+				echo "Build Tag: $env.BUILD_TAG"
+				echo "Job Name: $env.JOB_NAME"
+                echo "FINSIHED THESE STEPS"
             }
         }
-        stage("Build") {
+        stage("Build App") {
+            when {
+                expression { return params.RUN_BUILD_APP }
+            }
             steps {
-                sh "pwd"
-                echo "REACHED?!"
+                script {
+                    echo "Conterising App Pipeline"
+                    build job: "DevAdopt-Build-App-Pipeline",
+                        propagate: true,
+                        // wait: true,
+                        token: env.REMOTE_TRIGGER_TOKEN
+                }
             }
         }
     }
