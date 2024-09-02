@@ -77,20 +77,20 @@ pipeline {
                 }
             }
         }
-        stage("Terraform Destroy") {
-            steps {
-                echo "Must destroy resources"
-                dir("terraform") {
-                    echo "key to destroy starts here"
-                    withCredentials([file(credentialsId: "AWS_PEM_ID", variable: "AWS_KEY_PAIR_FILE")]) {
-                        sh '''
-                            ls -l $AWS_KEY_PAIR_FILE
+        // stage("Terraform Destroy") {
+        //     steps {
+        //         echo "Must destroy resources"
+        //         dir("terraform") {
+        //             echo "key to destroy starts here"
+        //             withCredentials([file(credentialsId: "AWS_PEM_ID", variable: "AWS_KEY_PAIR_FILE")]) {
+        //                 sh '''
+        //                     ls -l $AWS_KEY_PAIR_FILE
 
-                        '''
-                    }
-                }
-            }
-        }
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
     }
     post {
 		always {
