@@ -115,6 +115,19 @@ pipeline {
                 }
             }
         }
+        stage("Create The Infrastructure") {
+            when {
+                expression { return params.RUN_INFRASTRUCTURE }
+            }
+            steps {
+                script {
+                    echo "Creating the Infrastructure"
+                    build job: "DevAdopt-Infrastructure-Pipeline",
+                        propagate: true,
+                        token: env.REMOTE_TRIGGER_TOKEN
+                }
+            }
+        }
     }
     post {
 		always {
