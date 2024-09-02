@@ -21,9 +21,9 @@ pipeline {
                         sh "cp ${ENV_FILE_MVC} .env"
                         echo "Checking NPM version"
                         sh "npm --version"
+                        sh "ls"
                         echo "starting the testing"
                         sh "npm run pipeline-test"
-                        sh "ls"
                         sh "cat test.txt"
                         sh "ls"
 
