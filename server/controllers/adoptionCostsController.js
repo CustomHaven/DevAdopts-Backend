@@ -62,7 +62,7 @@ async function getAdoptionCosts(req, res) {
     await InitialAdoption.create(initialObject);
 
     // Send the response
-    res.json({
+    res.status(200).json({
       dogName: dogResult.dog_name,
       size: dogResult.size,
       initialCost,

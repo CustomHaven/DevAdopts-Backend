@@ -10,7 +10,7 @@ const userRouter = Router();
  * @swagger
  * tags:
  *   name: Users
- *   description: Operations related to Users API
+ *   description: Operations related to users API
  * /Users/logout:
  *   get:
  *     tags:
@@ -155,7 +155,8 @@ userRouter.post("/login", usersController.login);
  *     tags:
  *       - Users
  *     summary: Creates an admin user
- *     description: Adds a new admin user to the system. This action requires administrative privileges. Ensure that the request includes a valid JWT token with admin rights.
+ *     description: |
+ *       Adds a new admin user to the system. This action requires administrative privileges. Ensure that the request includes a valid JWT token with admin rights.
  *     operationId: create_admin
  *     requestBody:
  *       required: false
@@ -255,7 +256,7 @@ userRouter.get("/:id", authenticator, usersController.show);
  * @swagger
  * tags:
  *   name: Users
- *   description: Operations related to Users API
+ *   description: Operations related to users API
  * /Users/{id}:
  *   delete:
  *     tags:
