@@ -7,23 +7,30 @@ pipeline {
         stage("Build Docker DB Image") {
             steps {
                 dir("database") {
+                    echo "Right before Building the image script"
                     script {
                         echo "INSIDE THE DB PIPELINE"
                         echo "Received Build Tag: ${params.BUILD_ID}"
                         sh "ls"
-                        dockerImage = docker.image("customhaven/devadopt-db:${params.BUILD_ID}")
+                        sh """
+                        docker build -t customhaven/devadopt-db:${env.BUILD_ID} .
+                        """
+                        // Save the image ID to a variable for use in later stage
+                        env.DOCKER_IMAGE_DB = "customhaven/devadopt-db:${env.BUILD_ID}"
                     }
                 }
             }
         }
         stage("Push Docker DB Image") {
             steps {
-				script {
-					docker.withRegistry("", "dockerhub") {
-						dockerImage.push()
-						dockerImage.push("${params.BUILD_ID}")
-					}
-				}
+                script {
+                    dir("blog_db") {
+                        docker.withRegistry("", "dockerhub") {
+                            // using the env
+                            sh "docker push ${env.DOCKER_IMAGE_DB}"
+                        }
+                    }
+                }
             }
         }
         stage("Verify Image") {
