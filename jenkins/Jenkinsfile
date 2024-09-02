@@ -93,7 +93,7 @@ pipeline {
                         propagate: true,
                         token: env.REMOTE_TRIGGER_TOKEN,
                         parameters: [
-                            string(name: "BUILD_TAG", value: env.BUILD_TAG)
+                            string(name: "BUILD_ID", value: env.BUILD_ID)
                         ]
                 }
             }

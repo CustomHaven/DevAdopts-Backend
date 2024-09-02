@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: "BUILD_TAG", defaultValue: "", description: "The build tag from the triggering pipeline")
+        string(name: "BUILD_ID", defaultValue: "", description: "The build tag from the triggering pipeline")
     }
     stages {
         stage("Build Docker DB Image") {
@@ -9,9 +9,9 @@ pipeline {
                 dir("database") {
                     script {
                         echo "INSIDE THE DB PIPELINE"
-                        echo "Received Build Tag: ${params.BUILD_TAG}"
+                        echo "Received Build Tag: ${params.BUILD_ID}"
                         sh "ls"
-                        dockerImage = docker.image("customhaven/devadopt-db:${params.BUILD_TAG}")
+                        dockerImage = docker.image("customhaven/devadopt-db:${params.BUILD_ID}")
                     }
                 }
             }
@@ -21,7 +21,7 @@ pipeline {
 				script {
 					docker.withRegistry("", "dockerhub") {
 						dockerImage.push()
-						dockerImage.push("${params.BUILD_TAG}")
+						dockerImage.push("${params.BUILD_ID}")
 					}
 				}
             }
