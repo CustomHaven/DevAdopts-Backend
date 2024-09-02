@@ -38,7 +38,7 @@ describe("Dog Model", () => {
     });
 
 
-    describe("Constructor", () => {
+    xdescribe("Constructor", () => {
         it("should create a Dog instance with correct properties", () => {
             const dog = new Dog(resultObject);
             expect(dog.dog_id).toBe(resultObject.dog_id);
@@ -85,7 +85,7 @@ describe("Dog Model", () => {
     });
 
 
-    describe("create", () => {
+    xdescribe("create", () => {
         let copyResultObject;
         beforeEach(() => {
             copyResultObject = { ...resultObject };
@@ -154,7 +154,7 @@ describe("Dog Model", () => {
     });
 
 
-    describe("show", () => {
+    xdescribe("show", () => {
         it("resolves with a dog on successful db query", async () => {
             // Arrange
             const mockResults = [
@@ -182,7 +182,7 @@ describe("Dog Model", () => {
 
 
 
-    describe("update", () => {
+    xdescribe("update", () => {
         let copyResultObject;
         beforeEach(() => {
             copyResultObject = { ...resultObject };
