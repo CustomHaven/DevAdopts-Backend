@@ -7,3 +7,5 @@ terraform.tfstate.backup
 model.nlp
 coverage
 secret.txt
+test.txt
+coverage.txt

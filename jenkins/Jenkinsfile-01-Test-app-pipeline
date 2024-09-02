@@ -1,0 +1,118 @@
+pipeline {
+    agent any
+    environment {
+        nodeHome = tool "myNodeJS"
+        PATH = "$nodeHome/bin:$PATH"
+    }
+    stages {
+        stage("Build App") {
+            steps {
+                dir("server") {
+                    sh "npm install"
+                }
+            }
+        }
+        stage("Test App") {
+            steps {
+                dir("server") {
+                    sh "ls"
+                    echo "Checking NPM version"
+                    sh "npm --version"
+                    echo "starting the testing"
+                    sh "npm run pipeline-test"
+                    sh "ls"
+                    sh "cat test.txt"
+                    sh "ls"
+                    // Not needed but we keep it incase
+                    // Because Jenkins will judge the entire pipeline if the test is Failure
+                    script {
+                        def testResult = sh(script: "grep 'FAIL' test.txt", returnStatus: true)
+                        if (testResult == 0) {
+                            error("Tests failed! Marking the pipeline as failed.")
+                        }
+                    }
+                }
+            }
+        }
+        stage("App Test Coverage") {
+            steps {
+                dir("server") {
+                    sh "ls"
+                    sh "npm --version"
+                    echo "Starting Coverage Test Result"
+
+                    // Run Jest with coverage and save output to coverage.txt
+                    sh "npm run pipeline-coverage"
+                    echo "check if coverage is added"
+                    sh "ls"
+                    script {
+                        // Extract the functions coverage percentage from coverage.txt
+                        def funcsCoveragePercentage = sh(
+                            script: """
+                                grep 'All files' coverage.txt | awk -F '|' '{print \$5}' | tr -d '%'
+                            """,
+                            returnStdout: true
+                        ).trim()
+
+                        // Check if the coverage percentage was extracted correctly
+                        if (funcsCoveragePercentage == "") {
+                            error("Failed to extract functions coverage percentage from coverage.txt")
+                        }
+
+                        echo "Total Functions Coverage Percentage: ${funcsCoveragePercentage}%"
+
+                        sh "ls"
+
+                        // Convert to a number and check if it's below 60
+                        def coverageValue = funcsCoveragePercentage.toFloat()
+                        if (coverageValue < 30) { // change to 60% when I build more tests
+                            error("Functions coverage is below 60%. Failing the pipeline.")
+                        } else {
+                            echo "Functions coverage is sufficient. Proceeding with the pipeline."
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+		always {
+			echo "I always run"
+            echo "Final Cleanups"
+            dir("server") {
+                sh "rm -rf node_modules"
+                sh "ls > ls.txt"
+                sh "cat ls.txt"
+
+                script {
+                    def testTxtExists = sh(script: "grep 'test.txt' ls.txt", returnStatus: true) == 0
+                    if (testTxtExists) {
+                        sh "cat test.txt"
+                        sh "rm test.txt"
+                    }
+
+
+                    def coverageFileExist = sh(script: "grep 'coverage.txt' ls.txt", returnStatus: true) == 0
+                    if (coverageFileExist) {
+                        sh "cat coverage.txt"
+                        sh "rm coverage.txt"
+                    }
+
+                    def coverageExist = sh(script: "grep 'coverage' ls.txt", returnStatus: true) == 0
+                    if (coverageExist) {
+                        sh "rm -rf coverage"
+                    }
+                }
+                sh "ls"
+                sh "rm ls.txt"
+                sh "ls"
+            }
+		}
+		success {
+			echo "I run when successful"
+		}
+		failure {
+            echo "I run when failed"
+		}
+	}
+}
