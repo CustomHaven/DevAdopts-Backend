@@ -24,7 +24,7 @@ pipeline {
         stage("Push Docker DB Image") {
             steps {
                 script {
-                    dir("blog_db") {
+                    dir("database") {
                         docker.withRegistry("", "dockerhub") {
                             // using the env
                             sh "docker push ${env.DOCKER_IMAGE_DB}"

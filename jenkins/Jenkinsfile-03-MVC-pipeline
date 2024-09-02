@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: "BUILD_ID", defaultValue: "", description: "The build tag from the triggering pipeline")
+    }
+    environment {
+        dockerHome = tool "myDocker"
+		PATH = "$dockerHome/bin:$PATH"
+    }
+    stages {
+        stage("Build Docker MVC Image") {
+            steps {
+                withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
+                    echo "Current directory before moving into devadopt_mvc"
+                    sh "pwd"
+
+                    echo "Current directory inside devadopt_mvc"
+                    sh "pwd"
+                    sh "ls"
+
+                    script {
+                        sh """
+                        cd server
+                        docker build --build-arg NODE_ENV=production -t customhaven/devadopt_mvc:${params.BUILD_ID} .
+                        """// removing the .env
+                        env.DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:${params.BUILD_ID}"
+                    }
+                }
+            }
+        }
+        stage("Push Docker MVC Image") {
+            steps {
+                dir("devadopt_mvc") {
+                    script {
+                        docker.withRegistry("", "dockerhub") {
+                            sh "docker push ${env.DOCKER_IMAGE_MVC}"
+                            // dockerImageMVC.push()
+                            // dockerImageMVC.push("${env.BUILD_ID}")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+		always {
+			echo "I always run"
+		}
+		success {
+			echo "I run when successful"
+		}
+		failure {
+            echo "I run when failed"
+		}
+	}
+}
