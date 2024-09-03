@@ -100,11 +100,13 @@ pipeline {
         }
         stage('Run Docker Compose Playbook') {
             steps {
-                docker.withRegistry("", "dockerhub") {
-                    dir("ansible") {
-                        sh """
-                        ansible-playbook -i ${ANSIBLE_HOSTS} ${WORKSPACE}/ansible/playbooks/docker-run.yml
-                        """
+                script {
+                    docker.withRegistry("", "dockerhub") {
+                        dir("ansible") {
+                            sh """
+                            ansible-playbook -i ${ANSIBLE_HOSTS} ${WORKSPACE}/ansible/playbooks/docker-run.yml
+                            """
+                        }
                     }
                 }
             }
