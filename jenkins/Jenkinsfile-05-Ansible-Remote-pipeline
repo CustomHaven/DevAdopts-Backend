@@ -6,6 +6,8 @@ pipeline {
         DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:77"
         DOCKER_IMAGE_DB = "customhaven/devadopt_db:72"
         WORKSPACE_PATH = "${env.WORKSPACE}"
+        dockerHome = tool "myDocker"
+		PATH = "$dockerHome/bin:$PATH"
     }
     stages {
         stage("Checkout Code") {
@@ -98,8 +100,8 @@ pipeline {
         }
         stage('Run Docker Compose Playbook') {
             steps {
-                dir("ansible") {
-                    script {
+                docker.withRegistry("", "dockerhub") {
+                    dir("ansible") {
                         sh """
                         ansible-playbook -i ${ANSIBLE_HOSTS} ${WORKSPACE}/ansible/playbooks/docker-run.yml
                         """

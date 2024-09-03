@@ -3,6 +3,8 @@
   vars:
     IMAGE_DB_TAG: "customhaven/devadopt_db:72"
     IMAGE_MVC_TAG: "customhaven/devadopt_mvc:77"
+    docker_username: "<your_docker_username>"
+    docker_password: "<your_docker_password>"
   tasks:
     - name: Navigate to directory containing docker-compose.yml
       ansible.builtin.shell: cd /home/ec2-user
@@ -15,6 +17,11 @@
           Pulling Docker images:
           DB Image Tag: {{ IMAGE_DB_TAG }}
           MVC Image Tag: {{ IMAGE_MVC_TAG }}
+
+    - name: Log in to Docker Registry
+      ansible.builtin.shell: docker login -u {{ docker_username }} -p {{ docker_password }}
+      args:
+        chdir: /home/ec2-user
 
     - name: Pull Docker images
       ansible.builtin.shell: |
