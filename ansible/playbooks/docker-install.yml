@@ -1,0 +1,58 @@
+- hosts: production
+  become: true
+  tasks:
+    - name: Update packages
+      yum:
+        name: '*'
+        state: latest
+      become: true
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present # fixed
+      become: true
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+      become: true
+
+    # Check Docker service status to ensure Docker is running correctly
+    - name: Check Docker service status
+      command: systemctl status docker
+      register: docker_status
+      ignore_errors: true  # This ensures the playbook continues even if Docker is not running
+
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Ensure Docker socket permissions
+      file:
+        path: /var/run/docker.sock
+        owner: root
+        group: docker
+        mode: '0660'
+      become: true
+
+
+    - name: Install Docker Compose
+      shell: |
+        curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
+      become: true
+
+    - name: Check Docker Compose version
+      command: docker-compose version
+
+
+    - name: Set permissions for Docker Compose
+      file:
+        path: /usr/local/bin/docker-compose
+        mode: '0755'
+      become: true

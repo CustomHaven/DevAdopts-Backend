@@ -3,6 +3,10 @@ pipeline {
     parameters {
         string(name: "BUILD_ID", defaultValue: "", description: "The build tag from the triggering pipeline")
     }
+    environment {
+        POSTGRES_DB_DEVADOPT = credentials("POSTGRES_DB_DEVADOPT")
+        POSTGRES_PASSWORD_DEVADOPT = credentials("POSTGRES_PASSWORD_DEVADOPT")
+    }
     stages {
         stage("Build Docker DB Image") {
             steps {
@@ -13,10 +17,17 @@ pipeline {
                         echo "Received Build Tag: ${params.BUILD_ID}"
                         sh "ls"
                         sh """
-                        docker build -t customhaven/devadopt-db:${env.BUILD_ID} .
+                        ls
+                        pwd
+
+                        # Build Docker image with environment variables
+                        docker build \
+                            --build-arg POSTGRES_DB=\$POSTGRES_DB_DEVADOPT \
+                            --build-arg POSTGRES_PASSWORD=\$POSTGRES_PASSWORD_DEVADOPT \
+                            -t customhaven/devadopt-db:${params.BUILD_ID} .
                         """
                         // Save the image ID to a variable for use in later stage
-                        env.DOCKER_IMAGE_DB = "customhaven/devadopt-db:${env.BUILD_ID}"
+                        env.DOCKER_IMAGE_DB = "customhaven/devadopt-db:${params.BUILD_ID}"
                     }
                 }
             }

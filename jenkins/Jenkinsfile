@@ -5,6 +5,7 @@ pipeline {
         booleanParam(name: "RUN_DOCKER_MVC", defaultValue: false, description: "Run Docker MVC Pipeline")
         booleanParam(name: "RUN_DOCKER_DB", defaultValue: false, description: "Run Docker DB Pipeline")
         booleanParam(name: "RUN_INFRASTRUCTURE", defaultValue: false, description: "Run Infrastructure")
+        booleanParam(name: "RUN_REMOTE_CLOUD", defaultValue: false, description: "Run Remote Cloud")
     }
     environment {
         AWS_ACCESS_KEY_ID = credentials("AWS_ACCESS_KEY_ID")
@@ -118,6 +119,19 @@ pipeline {
         stage("Create The Infrastructure") {
             when {
                 expression { return params.RUN_INFRASTRUCTURE }
+            }
+            steps {
+                script {
+                    echo "Creating the Infrastructure"
+                    build job: "DevAdopt-Infrastructure-Pipeline",
+                        propagate: true,
+                        token: env.REMOTE_TRIGGER_TOKEN
+                }
+            }
+        }
+        stage("Ansible to connect to EC2 Instances") {
+            when {
+                expression { return params.RUN_REMOTE_CLOUD }
             }
             steps {
                 script {

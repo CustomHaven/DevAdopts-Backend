@@ -1,0 +1,12 @@
+- hosts: production
+  become: true
+  tasks:
+    - name: Navigate to directory containing docker-compose.yml
+      shell: cd ~/
+      args:
+        chdir: /home/ec2-user
+
+    - name: Run docker-compose 
+      shell: docker-compose up
+      args:
+        chdir: /home/ec2-user
