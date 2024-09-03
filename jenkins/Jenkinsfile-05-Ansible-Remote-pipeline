@@ -92,7 +92,7 @@ pipeline {
                         echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${tempDir}/{ENV_FILE_MVC}
                         echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${tempDir}/{ENV_FILE_MVC}
 
-                        cp ${tempDir}/{ENV_FILE_MVC} $.env 
+                        cp ${tempDir}/{ENV_FILE_MVC} $/.env 
                         """
 
                         // Loop through each host and copy the files using SCP
