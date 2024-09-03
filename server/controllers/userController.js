@@ -48,6 +48,7 @@ async function login(req, res) {
           throw new Error("Error in token generation");
         }
         res.status(200).json({
+          user_id: user.user_id,
           success: true,
           token: token,
         });
