@@ -48,43 +48,69 @@ pipeline {
                 }
             }
         }
-        stage('Test Permissions') {
-            steps {
-                script {
-                    sh """
-                    echo 'Hello, World!' > ${env.WORKSPACE}/test.txt
-                    cat ${env.WORKSPACE}/test.txt
-                    ls -l ${env.WORKSPACE}/
-                    rm ${env.WORKSPACE}/test.txt
-                    """
-                }
-            }
-        }
-        stage("Test File Creation") {
-            steps {
-                script {
-                    withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
-                        sh """
-                        mkdir -p ${WORKSPACE}/test_dir
-                        chmod 777 ${WORKSPACE}/test_dir
-                        cp ${ENV_FILE_MVC} ${WORKSPACE}/test_dir/.env
-                        echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${WORKSPACE}/test_dir/.env
-                        echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${WORKSPACE}/test_dir/.env
-                        """
-                    }
-                }
-            }
-        }
+        // stage('Test Permissions') {
+        //     steps {
+        //         script {
+        //             sh """
+        //             echo 'Hello, World!' > ${env.WORKSPACE}/test.txt
+        //             cat ${env.WORKSPACE}/test.txt
+        //             ls -l ${env.WORKSPACE}/
+        //             rm ${env.WORKSPACE}/test.txt
+        //             """
+        //         }
+        //     }
+        // }
+        // stage("Test File Creation") {
+        //     steps {
+        //         script {
+        //             env.SSH_DIR = "/tmp/.ssh"
+        //             sh """
+        //             mkdir -p ${env.SSH_DIR}
+        //             """
+        //             withCredentials([file(credentialsId: 'AWS_PEM_ID', variable: 'AWS_PEM_ID_FILE')]) {
+        //                 sh """
+        //                 cp ${AWS_PEM_ID_FILE} ${env.SSH_DIR}/default-ec2.pem
+        //                 chmod 600 ${env.SSH_DIR}/default-ec2.pem
+        //                 sed -i 's|private_key_file=.*|private_key_file=${env.SSH_DIR}/default-ec2.pem|' ${ANSIBLE_CONFIG}
+        //                 """
+        //             }
+
+        //             env.ARGS_ENV = "/tmp/.args"
+        //             sh """
+        //             mkdir -p ${env.ARGS_ENV}
+        //             """
+        //             withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
+        //                 sh """
+        //                 cp ${ENV_FILE_MVC} ${env.ARGS_ENV}/.env
+        //                 chmod 777 ${env.SSH_DIR}/.env
+        //                 echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${env.ARGS_ENV}/.env
+        //                 echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${env.ARGS_ENV}/.env
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
         stage("Send Docker-Compose to EC2 Instances") {
             steps {
                 script {
-                    sh "cat ${ANSIBLE_CONFIG}"
+                    env.ARGS_ENV = "/tmp/.args"
+                    sh """
+                    mkdir -p ${env.ARGS_ENV}
+                    """
+                    withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
+                        sh """
+                        cp ${ENV_FILE_MVC} ${env.ARGS_ENV}/.env
+                        chmod 777 ${env.SSH_DIR}/.env
+                        echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${env.ARGS_ENV}/.env
+                        echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${env.ARGS_ENV}/.env
+                        """
+                    }
                     def hosts = readFile("${ANSIBLE_HOSTS}").split("\n").findAll { it =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ }
 
                     // Send .env file directly to EC2 instances
                     for (host in hosts) {
                         sh """
-                        scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem "${WORKSPACE}/test_dir/.env" ec2-user@${host}:/home/ec2-user/
+                        scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem "${env.SSH_DIR}/.env" ec2-user@${host}:/home/ec2-user/
                         scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem docker-compose.yml ec2-user@${host}:/home/ec2-user/
                         """
                     }
