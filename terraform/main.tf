@@ -42,7 +42,7 @@ resource "aws_elb" "elb" {
     name = "elb"
     subnets = data.aws_subnets.default_subnets.ids
     security_groups = [aws_security_group.elb_sg.id]
-    instances = values(aws_instance.http_servers).*.id
+    instances = values(aws_instance.http_server).*.id
     listener {
         instance_port = 80
         instance_protocol = "http"
