@@ -30,7 +30,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req, res) => {
   res.status(200).json({
-    message: "This is the backend developed by DevAdopts Engineers",
+    message: `This is the backend developed by DevAdopts Engineers + ENV OF ${process.env.APP_LAST_NAME} ENV OF`,
   });
 });
 
