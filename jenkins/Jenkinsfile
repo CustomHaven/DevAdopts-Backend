@@ -136,7 +136,7 @@ pipeline {
             steps {
                 script {
                     echo "Creating the Infrastructure"
-                    build job: "DevAdopt-Infrastructure-Pipeline",
+                    build job: "DevAdopt-Ansible-EC2-Configuration-Pipeline",
                         propagate: true,
                         token: env.REMOTE_TRIGGER_TOKEN
                 }
