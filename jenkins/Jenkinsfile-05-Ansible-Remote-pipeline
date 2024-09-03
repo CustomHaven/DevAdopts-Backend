@@ -16,10 +16,12 @@ pipeline {
         stage("Prepare Ansible") {
             steps {
                 script {
-                    def sshDir = "${JENKINS_HOME}/.ssh"
-                    withEnv(["AWS_PEM_ID=${AWS_PEM_ID}"]) {
+                    def sshDir = "/tmp/.ssh" // Use /tmp for write access
+                    sh """
+                    mkdir -p ${sshDir}
+                    """
+                    withCredentials([file(credentialsId: 'AWS_PEM_ID', variable: 'AWS_PEM_ID_FILE')]) {
                         sh """
-                        mkdir -p ${sshDir}
                         echo "$AWS_PEM_ID" > ${sshDir}/default-ec2.pem
                         chmod 600 ${sshDir}/default-ec2.pem
 
