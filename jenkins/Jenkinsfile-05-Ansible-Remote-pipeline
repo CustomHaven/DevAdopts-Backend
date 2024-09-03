@@ -12,17 +12,17 @@ pipeline {
                 checkout scm
             }
         }
-        stage("Prepare Workspace Permissions") {
-            steps {
-                script {
-                    sh """
-                    sudo chown -R jenkins:jenkins /var/lib/jenkins/workspace/DevAdopt-Ansible-EC2-Configuration-Pipeline
-                    sudo chmod -R 755 /var/lib/jenkins/workspace/DevAdopt-Ansible-EC2-Configuration-Pipeline
-                    """
-                }
-            }
-        }
-        stage("Prepare Ansible") {
+        // stage("Prepare Workspace Permissions") {
+        //     steps {
+        //         script {
+        //             sh """
+        //             sudo chown -R jenkins:jenkins /var/lib/jenkins/workspace/DevAdopt-Ansible-EC2-Configuration-Pipeline
+        //             sudo chmod -R 755 /var/lib/jenkins/workspace/DevAdopt-Ansible-EC2-Configuration-Pipeline
+        //             """
+        //         }
+        //     }
+        // }
+        // stage("Prepare Ansible") {
             steps {
                 script {
                     env.SSH_DIR = "/tmp/.ssh"
