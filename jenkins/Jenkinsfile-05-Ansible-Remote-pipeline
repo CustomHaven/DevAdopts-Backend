@@ -43,7 +43,7 @@ pipeline {
         stage('Check Permissions') {
             steps {
                 script {
-                    echo "\$SHELL"
+                    echo "$SHELL"
                     sh "ls -ld ${env.WORKSPACE}"
                 }
             }
