@@ -17,13 +17,15 @@ pipeline {
             steps {
                 script {
                     def sshDir = "${JENKINS_HOME}/.ssh"
-                    sh """
-                    mkdir -p ${sshDir}
-                    echo "$AWS_PEM_ID" > ${sshDir}/default-ec2.pem
-                    chmod 600 ${sshDir}/default-ec2.pem
+                    withEnv(["AWS_PEM_ID=${AWS_PEM_ID}"]) {
+                        sh """
+                        mkdir -p ${sshDir}
+                        echo "$AWS_PEM_ID" > ${sshDir}/default-ec2.pem
+                        chmod 600 ${sshDir}/default-ec2.pem
 
-                    sed -i "s|private_key_file=.*|private_key_file=${sshDir}/default-ec2.pem|" ${ANSIBLE_CONFIG}
-                    """
+                        sed -i "s|private_key_file=.*|private_key_file=${sshDir}/default-ec2.pem|" ${ANSIBLE_CONFIG}
+                        """
+                    }
                 }
             }
         }
