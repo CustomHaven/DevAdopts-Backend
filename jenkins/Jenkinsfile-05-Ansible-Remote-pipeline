@@ -15,28 +15,30 @@ pipeline {
         }
         stage("Prepare Ansible") {
             steps {
-                def sshDir = "${JENKINS_HOME}/.ssh"
-                sh '''
-                mkdir -p ~/.ssh
-                echo "$AWS_PEM_ID" > ~/.ssh/default-ec2.pem
-                chmod 600 ${sshDir}/default-ec2.pem
+                script {
+                    def sshDir = "${JENKINS_HOME}/.ssh"
+                    sh """
+                    mkdir -p ${sshDir}
+                    echo "$AWS_PEM_ID" > ${sshDir}/default-ec2.pem
+                    chmod 600 ${sshDir}/default-ec2.pem
 
-                sed -i "s|private_key_file=.*|private_key_file=${sshDir}/default-ec2.pem|" ${ANSIBLE_CONFIG}
-                '''
+                    sed -i "s|private_key_file=.*|private_key_file=${sshDir}/default-ec2.pem|" ${ANSIBLE_CONFIG}
+                    """
+                }
             }
         }
         stage("Send Docker-Compose to EC2 Instances") {
             steps {
                 script {
-                    sh "cat $ANSIBLE_CONFIG"
+                    sh "cat ${ANSIBLE_CONFIG}"
                     withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
                         def hosts = readFile("${ANSIBLE_HOSTS}").split("\n").findAll { it =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ }
 
                         for (host in hosts) {
                             sh """
                             cp ${ENV_FILE_MVC} .env
-                            sh "echo IMAGE_MVC_TAG=${env.DOCKER_IMAGE_MVC} >> .env"
-                            sh "echo IMAGE_DB_TAG=${env.DOCKER_IMAGE_DB} >> .env"
+                            echo "IMAGE_MVC_TAG=${env.DOCKER_IMAGE_MVC}" >> .env
+                            echo "IMAGE_DB_TAG=${env.DOCKER_IMAGE_DB}" >> .env
                             scp -o StrictHostKeyChecking=no -i ${sshDir}/default-ec2.pem .env ec2-user@${host}:/home/ec2-user/
                             scp -o StrictHostKeyChecking=no -i ${sshDir}/default-ec2.pem docker-compose.yml ec2-user@${host}:/home/ec2-user/
                             rm .env
@@ -50,9 +52,9 @@ pipeline {
             steps {
                 dir("ansible") {
                     script {
-                        sh '''
+                        sh """
                         ansible-playbook -i ${ANSIBLE_HOSTS} ansible/playbooks/docker-install.yml
-                        '''
+                        """
                     }
                 }
             }
@@ -61,9 +63,9 @@ pipeline {
             steps {
                 dir("ansible") {
                     script {
-                        sh '''
+                        sh """
                         ansible-playbook -i ${ANSIBLE_HOSTS} ansible/playbooks/docker-run.yml
-                        '''
+                        """
                     }
                 }
             }
