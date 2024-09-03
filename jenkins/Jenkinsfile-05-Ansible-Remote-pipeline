@@ -59,6 +59,18 @@ pipeline {
                 }
             }
         }
+        stage("Test File Creation") {
+            steps {
+                script {
+                    sh """
+                    mkdir -p ${WORKSPACE}/test_dir
+                    chmod 777 ${WORKSPACE}/test_dir
+                    echo "Test content" > ${WORKSPACE}/test_dir/test_file.txt
+                    cat ${WORKSPACE}/test_dir/test_file.txt
+                    """
+                }
+            }
+        }
         stage("Send Docker-Compose to EC2 Instances") {
             steps {
                 script {
