@@ -49,7 +49,7 @@ pipeline {
                         for (host in hosts) {
                             sh """
 
-                            scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem /temp/.env ec2-user@${host}:/home/ec2-user/
+                            scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem ${tempDir}/.env ec2-user@${host}:/home/ec2-user/
                             scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem docker-compose.yml ec2-user@${host}:/home/ec2-user/
                             """
                         }
