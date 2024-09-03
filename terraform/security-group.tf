@@ -57,7 +57,7 @@ resource "aws_security_group" "elb_sg" {
     }
 }
 
-resource "aws_security_group_rule" "app_port_ingress" {
+resource "aws_security_group_rule" "elb_app_port_ingress" {
     type = "ingress"
     from_port = 3333
     to_port = 3333
