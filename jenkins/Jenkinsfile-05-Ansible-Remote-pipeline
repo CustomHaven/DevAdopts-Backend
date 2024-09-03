@@ -59,7 +59,7 @@ pipeline {
                     withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
                         sh """
                         echo "check premission env_file_mvc"
-                        ls -l ${ENV_FILE_MVC}"
+                        ls -l ${ENV_FILE_MVC}
                         echo "check premission env_file_mvc"
                         cp ${ENV_FILE_MVC} ${env.ARGS_ENV}/.env
                         echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${env.ARGS_ENV}/.env
