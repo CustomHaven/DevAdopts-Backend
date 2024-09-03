@@ -22,7 +22,7 @@ pipeline {
         //         }
         //     }
         // }
-        // stage("Prepare Ansible") {
+        stage("Prepare Ansible") {
             steps {
                 script {
                     env.SSH_DIR = "/tmp/.ssh"
