@@ -42,7 +42,7 @@ pipeline {
         stage('Check Permissions') {
             steps {
                 script {
-                    def workspacePath = '/var/jenkins_home/workspace'
+                    def workspacePath = '${WORKSPACE}'
 
                     // Check directory ownership and permissions
                     sh "ls -ld ${workspacePath}"
@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     // Define the path to the workspace
-                    def workspacePathe = '/var/jenkins_home/workspace'
+                    def workspacePathe = '${WORKSPACE}'
 
                     // Create a test file
                     sh "echo 'Hello, World!' > ${workspacePathe}/test.txt"
