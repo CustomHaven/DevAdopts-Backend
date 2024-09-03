@@ -67,7 +67,7 @@ pipeline {
                         sh """
                         pwd
                         ls -R
-                        ansible-playbook -i ${ANSIBLE_HOSTS} ansible/playbooks/docker-install.yml
+                        ansible-playbook -i ${ANSIBLE_HOSTS} ${WORKSPACE}/ansible/playbooks/docker-install.yml
                         """
                     }
                 }
@@ -78,7 +78,7 @@ pipeline {
                 dir("ansible") {
                     script {
                         sh """
-                        ansible-playbook -i ${ANSIBLE_HOSTS} ansible/playbooks/docker-run.yml
+                        ansible-playbook -i ${ANSIBLE_HOSTS} ${WORKSPACE}/ansible/playbooks/docker-run.yml
                         """
                     }
                 }
