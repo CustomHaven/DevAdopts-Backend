@@ -2,8 +2,9 @@ const Dog = require("../models/Dog");
 
 async function index(req, res) {
     try {
+        console.log("hello reached dogs!")
         const dogs = await Dog.getAll();
-        res.status(200).json({ data: dogs });
+        return res.status(200).json({ data: dogs });
 
     } catch (error) {
         res.status(404).json({ error: error.message });

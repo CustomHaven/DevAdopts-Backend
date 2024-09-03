@@ -3,7 +3,7 @@ require('dotenv').config();
 const app = require('./app');
 
 app.listen(process.env.PORT, () => {
-    console.log(`App listening on port ${process.env.PORT}... + ENV OF ${process.env.APP_LAST_NAME} ENV OF`);
+    console.log(`App listening on port ${process.env.PORT}... + ENV OF ${process.env.APP_LAST_NAME} ENV OF ${process.env.NODE_ENV} stage`);
 })
 
 

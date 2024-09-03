@@ -51,10 +51,28 @@ class Dog {
         monthly = await MonthlyAdoption.show(dog_id);
         lta = await LongTermAdoption.show(dog_id);
 
+        console.log("initial")
+        console.log(initial)
+
+        console.log("monthly")
+        console.log(monthly)
+
+        console.log("lta")
+        console.log(lta)
+
         // Gather the adoption plans additional assoiciated costs
         const initialPopulated = await initial.populateAssociations();
         const monthlyPopulated = await monthly.populateAssociations();
         const ltaPopulated = await lta.populateAssociations();
+
+        console.log("initial populate")
+        console.log(initialPopulated)
+
+        console.log("monthly populate")
+        console.log(monthlyPopulated)
+
+        console.log("lta populate")
+        console.log(ltaPopulated)
 
         return {
             InitialAdoption: initialPopulated,
@@ -64,7 +82,19 @@ class Dog {
     }
 
     static async getAll() {
+        console.log("getALL")
+        const org = {
+            user: process.env.DB_USER,
+            host: process.env.DB_HOST,
+            database: process.env.DB_NAME,
+            password: process.env.DB_PASSWORD,
+            port: process.env.DB_PORT
+        }
+
+        console.log("org", org);
         const dog = await db.query("SELECT * FROM dogs");
+        console.log("dog result query: ")
+        console.log(dog.rows.length);
         if (dog.rows.length === 0) {
             throw new Error("No dogs available");
         }

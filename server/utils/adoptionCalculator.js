@@ -10,6 +10,9 @@ async function calculateAdoptionCosts(dogId, Dog, InitialAdoption, MonthlyAdopti
       dogResult.neutered
     );
 
+    console.log("Costod=f Vaues");
+    console.log(costOfValues);
+
     let neuteredPrice = dogResult.neutered ? 0 : costOfValues.neuter.price;
     const microchipPrice = dogResult.microchipped ? 0 : 10.9;
     const collarLeashPrice = dogResult.collar_leash ? 0 : 15;
