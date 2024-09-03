@@ -1,4 +1,3 @@
-version: "3.9"
 services:
     devadopt-mvc:
         image: ${IMAGE_MVC_TAG}
