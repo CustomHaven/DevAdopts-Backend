@@ -39,23 +39,33 @@ pipeline {
                 }
             }
         }
+        stage('Check Permissions') {
+            steps {
+                script {
+                    def workspacePath = '/var/jenkins_home/workspace'
+
+                    // Check directory ownership and permissions
+                    sh "ls -ld ${workspacePath}"
+                }
+            }
+        }
         stage('Test Permissions') {
             steps {
                 script {
                     // Define the path to the workspace
-                    def workspacePath = '/var/jenkins_home/workspace'
-                    
+                    def workspacePathe = '/var/jenkins_home/workspace'
+
                     // Create a test file
-                    sh "echo 'Hello, World!' > ${workspacePath}/test.txt"
-                    
+                    sh "echo 'Hello, World!' > ${workspacePathe}/test.txt"
+
                     // Check if the file was created successfully
-                    sh "cat ${workspacePath}/test.txt"
-                    
+                    sh "cat ${workspacePathe}/test.txt"
+
                     // List files in the workspace directory
-                    sh "ls -l ${workspacePath}/"
-                    
+                    sh "ls -l ${workspacePathe}/"
+
                     // Remove the test file
-                    sh "rm ${workspacePath}/test.txt"
+                    sh "rm ${workspacePathe}/test.txt"
                 }
             }
         }
