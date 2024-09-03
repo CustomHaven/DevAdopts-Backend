@@ -38,6 +38,7 @@ app.get("/hello", authenticator, (req, res) => {
   res.status(200).json({ message: "Authenticated" });
 });
 
+
 app.use("/dogs", dogsRouter);
 app.use("/users", usersRouter);
 app.use("/adoptioncosts", adoptionCostsRouter);
