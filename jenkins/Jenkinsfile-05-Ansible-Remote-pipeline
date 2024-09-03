@@ -37,9 +37,14 @@ pipeline {
                         def hosts = readFile("${ANSIBLE_HOSTS}").split("\n").findAll { it =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ }
 
                         // Create a temporary directory within the Jenkins workspace
-                        sh "mkdir -p ${WORKSPACE}/temp"
+                        def tempDir = "${WORKSPACE}/temp"
+                        sh "mkdir -p ${tempDir}"
 
-                        writeFile(file: "${WORKSPACE}/temp/.env", text: readFile(ENV_FILE_MVC) + "\nIMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}\nIMAGE_DB_TAG=${DOCKER_IMAGE_DB}")
+                        sh """
+                        cp ${ENV_FILE_MVC} ${tempDir}/.env
+                        echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${tempDir}/.env
+                        echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${tempDir}/.env
+                        """
                         
                         for (host in hosts) {
                             sh """
@@ -50,7 +55,7 @@ pipeline {
                         }
                         
                         // Clean up
-                        sh "rm -rf ${WORKSPACE}/temp"
+                        sh "rm -rf ${tempDir}"
                     }
                 }
             }
