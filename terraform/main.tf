@@ -37,9 +37,27 @@ resource "aws_instance" "http_server" {
     }
 }
 
+
+resource "aws_elb" "elb" {
+    name = "elb"
+    subnets = data.aws_subnets.default_subnets.ids
+    security_groups = [aws_security_group.elb_sg.id]
+    instances = values(aws_instance.http_servers).*.id
+    listener {
+        instance_port = 80
+        instance_protocol = "http"
+        lb_port = 80
+        lb_protocol = "http"
+    }
+}
+
 # We have 3 subnets accordingly I think there should be 3 public ips for each subnet dont I need to do a loop? for the output
 output "dns_public_ips" {
     value = [for instance in aws_instance.http_server : instance.public_ip]
 }
 
 # 13.40.43.201  
+
+output "elb_public_dns" {
+    value = aws_elb.elb.dns_name
+}
