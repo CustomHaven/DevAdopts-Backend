@@ -42,13 +42,15 @@ resource "aws_elb" "elb" {
     name = "elb"
     subnets = data.aws_subnets.default_subnets.ids
     security_groups = [aws_security_group.elb_sg.id]
-    instances = values(aws_instance.http_server).*.id
+    
     listener {
         instance_port = 80
         instance_protocol = "http"
         lb_port = 80
         lb_protocol = "http"
     }
+    
+    instances = [for instance in aws_instance.http_server : instance.id]
 }
 
 # We have 3 subnets accordingly I think there should be 3 public ips for each subnet dont I need to do a loop? for the output
