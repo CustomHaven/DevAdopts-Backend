@@ -1,7 +1,7 @@
 version: "3.9"
 services:
     devadopt-mvc:
-        image: customhaven/devadopt_mvc:159
+        image: ${IMAGE_MVC_TAG}
         ports:
             - "3333:3333"
         depends_on:
@@ -13,7 +13,7 @@ services:
             .env
 
     devadopt-db:
-        image: customhaven/devadopt-db:72
+        image: ${IMAGE_DB_TAG}
         ports:
             - "5432:5432"
         restart: always
