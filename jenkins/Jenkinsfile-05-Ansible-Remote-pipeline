@@ -5,6 +5,7 @@ pipeline {
         ANSIBLE_HOSTS = "${WORKSPACE}/ansible/ansible_hosts"
         DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:77"
         DOCKER_IMAGE_DB = "customhaven/devadopt_db:72"
+        WORKSPACE_PATH = "${env.WORKSPACE}"
     }
     stages {
         stage("Checkout Code") {
