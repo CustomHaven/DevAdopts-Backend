@@ -58,7 +58,7 @@ pipeline {
                     """
                     withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
                         sh """
-                        ech "check premission env_file_mvc"
+                        echo "check premission env_file_mvc"
                         sh "ls -l ${ENV_FILE_MVC}"
                         echo "check premission env_file_mvc"
                         cp ${ENV_FILE_MVC} ${env.ARGS_ENV}/.env
