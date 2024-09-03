@@ -65,11 +65,13 @@ pipeline {
 
                     // Send .env file directly to EC2 instances
                     for (host in hosts) {
+                        sh "cp ${env.ARGS_ENV}/.env ${env.ARGS_ENV}/.env.backup"
                         sh """
                         echo 'URL=${host}' >> ${env.ARGS_ENV}/.env
                         scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem "${env.ARGS_ENV}/.env" ec2-user@${host}:/home/ec2-user/
                         scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem docker-compose.yml ec2-user@${host}:/home/ec2-user/
                         """
+                        sh "mv ${env.ARGS_ENV}/.env.backup ${env.ARGS_ENV}/.env"
                     }
                     // Clean up the temporary directory
                     sh "rm -rf ${env.ARGS_ENV}"
