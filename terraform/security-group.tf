@@ -51,7 +51,7 @@ resource "aws_security_group_rule" "egress" {
 
 resource "aws_security_group" "elb_sg" {
     name = "elb_sg"
-    vpc_id = aws_default_vpc.default.id
+    vpc_id = aws_default_vpc.default_vpc.id
     tags = {
         name = "elb_svg"
     }
