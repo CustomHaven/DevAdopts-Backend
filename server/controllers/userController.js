@@ -37,7 +37,10 @@ async function register(req, res) {
 async function login(req, res) {
   const data = req.body;
   try {
+    console.log("INSIDE", req.body)
     const user = await User.getOneByEmail(data.email);
+
+    console.log("USER M", user)
 
     const match = await bcrypt.compare(data.password, user.password);
 

@@ -39,7 +39,38 @@ xdescribe("Dogs controller", () => {
             neutered: true,
             microchipped: true,
             collar_leash: true,
-            obedience_classes_needed: true
+            obedience_classes_needed: true,
+            InitialAdoption: {
+                initial_id: 2,
+                calculated_initial_price: "363.90",
+                neutering_price_id: 1,
+                microchip_price: 10.9,
+                bed_size_id: 1,
+                collar_leash_price: 15,
+                obedience_classes_price: 65,
+                dog_id: 1,
+                neutering_price: 248,
+                bed_price: 25
+            },
+            MonthlyAdoption: {
+                monthly_id: 3,
+                calculated_monthly_cost: "100.00",
+                amount_of_food_id: 1,
+                pet_insurance_id: 1,
+                veterinary_care_id: 1,
+                dog_id: 1,
+                vet_price: 55,
+                pet_insurance_price: 25,
+                food_price: 20
+            },
+            LongTermAdoption: {
+                long_term_id: 4,
+                calculated_long_term_cost: "1087.00",
+                end_of_life_id: 1,
+                average_medical_cost: 822,
+                dog_id: 1,
+                end_of_life_price: 265
+            }
         }
         
         

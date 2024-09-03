@@ -147,7 +147,7 @@ botRouter.post("/", authenticator, botController.create);
  *                   type: string
  *                   example: "Exceeded your 3 RPM"
  */
-botRouter.get("/interact-with-bot/:preference_id", authenticator, botController.interactWithAI);
+botRouter.get("/interact-with-bot/:preference_id", botController.interactWithAI);
 
 /**
  * @swagger

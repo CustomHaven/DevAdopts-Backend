@@ -1,6 +1,6 @@
 const Preference = require("../models/Preference");
 const openai = require("../services/openaiSetup");
-const { updateWhatToAsk, whatToAsk } = require("../utils/chatGPTHelper");
+const { updateWhatToAsk, whatToAsk, questionObj } = require("../utils/chatGPTHelper");
 const axios = require("axios");
 
 async function interactWithAI(req, res) {
@@ -30,19 +30,24 @@ async function interactWithAI(req, res) {
             return finalObject;
         })[0];
 
-        // console.log("REFINE", refinedObj);
+        // refinedObj.small_animals = "I have 4";
+        // refinedObj.young_children = "I have 6";
+        // refinedObj.activity = "High";
+        // refinedObj.living_space_size = "large";
+        // refinedObj.garden = "yes";
+        // refinedObj.allergy_information = "High";
+        // refinedObj.other_animals = "3 cats";
+        // refinedObj.fencing = "6 foot";
+        // refinedObj.previous_experience_years = "yes i got 5 years";
+        // refinedObj.annual_income= 50000;
 
         const updateQuestion = updateWhatToAsk(whatToAsk, requiredKeys, refinedObj);
-
-
-
-        console.log("updarequestion", updateQuestion);
         
         if (updateQuestion.count === 10) {
             updateQuestion.question += JSON.stringify(refinedObj);
         }
 
-        const data = {
+        const secondOptionData = {
             "messages": [
                 {
                     "text": updateQuestion.question,
@@ -52,44 +57,31 @@ async function interactWithAI(req, res) {
             "system": "Doctor"
         };
 
-        const response = await axios.post(url, data, { headers });
-        // return await response.data;
+        let
+        gptResponse = await openai.chat.completions.create({
+            // messages: [{ "role": "user", "content": "Explain quantum computing in detail." }],
+            messages: [{ "role": "assistant", "content": updateQuestion.question }],
+            // model: "gpt-3.5-turbo"
+            model: "gpt-4o-mini"
+            // model: "text-embedding-3-small"
+        });
 
-        // async function spendToTier1() {
-        //     const promises = [];
-        //     for (let i = 0; i < 100; i++) {
-        //         console.log(i, ": first")
-        //         promises.push(
-        //             openai.chat.completions.create({
-        //                 model: "gpt-3.5-turbo",
-        //                 messages: [{ "role": "user", "content": "Explain quantum computing in detail." }]
-        //             })
-        //         );
-        //     }
-        //     console.log(promises)
-        //     await Promise.all(promises);
-        //     console.log('Requests sent.');
-        // }
-        
-        // spendToTier1();
+        console.log("GETRESPONSE!?", gptResponse)
+        console.log("\n\n\n\n\n")
 
-        // const gptResponse = await openai.chat.completions.create({
-        //     // messages: [{ "role": "user", "content": "Explain quantum computing in detail." }],
-        //     messages: [{ "role": "assistant", "content": updateQuestion.question }],
-        //     // model: "gpt-3.5-turbo"
-        //     model: "gpt-4o-mini"
-        //     // model: "text-embedding-3-small"
-        // });
-
-        // console.log("FINITO", response.data.outputs[0].text)
-
-        // console.log("gpt info!", gptResponse);
-        res.status(200).json({ data: { answer: response.data.outputs[0].text } });
+        if (gptResponse.status === 429) {
+            if (updateQuestion.count === 10) {
+                const secondAI = await axios.post(url, secondOptionData, { headers });
+                return res.status(200).json({ data: { answer: secondAI.data.outputs[0].text } });
+            } else {
+                const theQuestion = questionObj[updateQuestion.updatedList[0]]
+                return res.status(200).json({ data: { answer: theQuestion } });
+            }
+            
+        }
 
 
-        // res.status(200).json({ data: { answer: gptResponse.choices[0].message.content } });
-
-        // res.status(200).json({ data: { answer: "gptResponse.choices[0].message.content" } });
+        res.status(200).json({ data: { answer: gptResponse.choices[0].message.content } });
 
     } catch (error) {
         res.status(400).json({ error: error.message });

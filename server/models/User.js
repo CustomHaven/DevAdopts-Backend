@@ -21,9 +21,11 @@ class User {
     this.admin = admin;
   }
   static async getOneByEmail(email) {
+    console.log("EMAIL", email)
     const response = await db.query("SELECT * FROM users WHERE email = $1", [
       email,
     ]);
+    console.log("EMIAL GOT", response.rows)
     if (response.rows.length != 1) {
       throw new Error("Unable to locate user.");
     }

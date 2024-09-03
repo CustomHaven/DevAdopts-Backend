@@ -3,7 +3,7 @@ const db = require("../db/connect");
 class InitialAdoption {
     constructor(initial) {
         this.initial_id = initial.initial_id;
-        this.calculated_initial_price = initial.calculated_price;
+        this.calculated_initial_price = initial.calculated_initial_price;
         this.neutering_price_id = initial.neutering_price_id;
         this.microchip_price = initial.microchip_price;
         this.bed_size_id = initial.bed_size_id;

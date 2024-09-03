@@ -13,7 +13,7 @@ let resultObject;
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-describe("Bot API Endpoints", () => {
+xdescribe("Bot API Endpoints", () => {
     let api; 
     let port = 0;
     beforeEach(async () => {

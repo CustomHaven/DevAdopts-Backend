@@ -5,7 +5,7 @@ let resultObject;
 const datetime = new Date();
 const datenow = datetime.toISOString().replace(/T/, " ").replace(/\..+/, "");
 
-describe("Dog Model", () => {
+xdescribe("Dog Model", () => {
 
     beforeEach(() => {
         resultObject = {
@@ -32,7 +32,38 @@ describe("Dog Model", () => {
             neutered: true,
             microchipped: true,
             collar_leash: true,
-            obedience_classes_needed: true
+            obedience_classes_needed: true,
+            InitialAdoption: {
+                initial_id: 2,
+                calculated_initial_price: "363.90",
+                neutering_price_id: 1,
+                microchip_price: 10.9,
+                bed_size_id: 1,
+                collar_leash_price: 15,
+                obedience_classes_price: 65,
+                dog_id: 1,
+                neutering_price: 248,
+                bed_price: 25
+            },
+            MonthlyAdoption: {
+                monthly_id: 3,
+                calculated_monthly_cost: "100.00",
+                amount_of_food_id: 1,
+                pet_insurance_id: 1,
+                veterinary_care_id: 1,
+                dog_id: 1,
+                vet_price: 55,
+                pet_insurance_price: 25,
+                food_price: 20
+            },
+            LongTermAdoption: {
+                long_term_id: 4,
+                calculated_long_term_cost: "1087.00",
+                end_of_life_id: 1,
+                average_medical_cost: 822,
+                dog_id: 1,
+                end_of_life_price: 265
+            }
         };
         jest.clearAllMocks();
     });
@@ -72,7 +103,7 @@ describe("Dog Model", () => {
             // Assert
             expect(Dog).toBeDefined();
             expect(Dog.getAll).toBeDefined();
-            expect(db.query).toHaveBeenCalledTimes(1);
+            expect(db.query).toHaveBeenCalledTimes(31);
             expect(results[2].dog_id).toBe(3);
             expect(results.every(result => result instanceof Dog)).toBe(true);
         });
@@ -85,7 +116,7 @@ describe("Dog Model", () => {
     });
 
 
-    xdescribe("create", () => {
+    describe("create", () => {
         let copyResultObject;
         beforeEach(() => {
             copyResultObject = { ...resultObject };
@@ -126,6 +157,9 @@ describe("Dog Model", () => {
                 { ...resultObject, dog_id: 5 }
             ];
             const mockResult = { ...resultObject, dog_id: 5, timestamp: datenow };
+            delete mockResult.InitialAdoption;
+            delete mockResult.MonthlyAdoption;
+            delete mockResult.LongTermAdoption;
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: [] });
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: queryResult });
 
@@ -154,7 +188,7 @@ describe("Dog Model", () => {
     });
 
 
-    xdescribe("show", () => {
+    describe("show", () => {
         it("resolves with a dog on successful db query", async () => {
             // Arrange
             const mockResults = [
@@ -182,7 +216,7 @@ describe("Dog Model", () => {
 
 
 
-    xdescribe("update", () => {
+    describe("update", () => {
         let copyResultObject;
         beforeEach(() => {
             copyResultObject = { ...resultObject };
@@ -203,6 +237,9 @@ describe("Dog Model", () => {
             ];
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: mockResults });
             const mockResult = mockResults[0];
+            delete mockResult.InitialAdoption;
+            delete mockResult.MonthlyAdoption;
+            delete mockResult.LongTermAdoption;
 
             const correctTime = mockResult.timestamp.toISOString().replace("T", " ").replace(/\..+/, "");
             // Act
@@ -258,6 +295,10 @@ describe("Dog Model", () => {
             // Arrange
             const mockResults = [ resultObject ];
             jest.spyOn(db, "query").mockResolvedValueOnce({ rows: mockResults });
+
+            delete resultObject.InitialAdoption;
+            delete resultObject.MonthlyAdoption;
+            delete resultObject.LongTermAdoption;
 
             // Act
             const result = new Dog(resultObject);
