@@ -3,7 +3,7 @@ pipeline {
     environment {
         ANSIBLE_CONFIG = "${WORKSPACE}/ansible/ansible.cfg"
         ANSIBLE_HOSTS = "${WORKSPACE}/ansible/ansible_hosts"
-        DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:${params.BUILD_ID}"
+        DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:77"
         DOCKER_IMAGE_DB = "customhaven/devadopt_db:72"
         AWS_PEM_ID = credentials('AWS_PEM_ID')
     }
