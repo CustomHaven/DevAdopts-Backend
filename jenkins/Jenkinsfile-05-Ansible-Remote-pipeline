@@ -36,12 +36,13 @@ pipeline {
                     withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
                         def hosts = readFile("${ANSIBLE_HOSTS}").split("\n").findAll { it =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ }
 
-                        // Create a temporary directory for the .env file
-                        sh 'mkdir -p /tmp/env_dir'
+                        // Create a temporary directory within the Jenkins workspace
+                        def envDir = "${WORKSPACE}/env_dir"
+                        sh "mkdir -p ${envDir}"
                         
                         for (host in hosts) {
                             sh """
-                            cp ${ENV_FILE_MVC} /tmp/env_dir/.env
+                            cp ${ENV_FILE_MVC} ${envDir}/.env
                             echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> /tmp/env_dir/.env
                             echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> /tmp/env_dir/.env
                             scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem /tmp/env_dir/.env ec2-user@${host}:/home/ec2-user/
@@ -50,7 +51,7 @@ pipeline {
                         }
                         
                         // Clean up
-                        sh 'rm -rf /tmp/env_dir'
+                        sh "rm -rf ${envDir}"
                     }
                 }
             }
