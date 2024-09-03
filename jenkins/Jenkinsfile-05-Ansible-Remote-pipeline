@@ -65,6 +65,8 @@ pipeline {
                 dir("ansible") {
                     script {
                         sh """
+                        pwd
+                        ls -R
                         ansible-playbook -i ${ANSIBLE_HOSTS} ansible/playbooks/docker-install.yml
                         """
                     }
