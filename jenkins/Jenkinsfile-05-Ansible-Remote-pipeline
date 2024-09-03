@@ -4,7 +4,7 @@ pipeline {
         ANSIBLE_CONFIG = "${WORKSPACE}/ansible/ansible.cfg"
         ANSIBLE_HOSTS = "${WORKSPACE}/ansible/ansible_hosts"
         DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:77"
-        DOCKER_IMAGE_DB = "customhaven/devadopt_db:72"
+        DOCKER_IMAGE_DB = "customhaven/devadopt-db:72"
         WORKSPACE_PATH = "${env.WORKSPACE}"
         DOCKER_CREDENTIALS_ID = "DOCKER_CREDENTIALS_ID"
     }
@@ -14,16 +14,6 @@ pipeline {
                 checkout scm
             }
         }
-        // stage("Prepare Workspace Permissions") {
-        //     steps {
-        //         script {
-        //             sh """
-        //             sudo chown -R jenkins:jenkins ${WORKSPACE_PATH}
-        //             sudo chmod -R 755 ${WORKSPACE_PATH}
-        //             """
-        //         }
-        //     }
-        // }
         stage("Prepare Ansible") {
             steps {
                 script {
