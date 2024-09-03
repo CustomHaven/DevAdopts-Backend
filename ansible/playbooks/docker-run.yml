@@ -3,8 +3,8 @@
   vars:
     IMAGE_DB_TAG: "customhaven/devadopt_db:72"
     IMAGE_MVC_TAG: "customhaven/devadopt_mvc:77"
-    docker_username: "<your_docker_username>"
-    docker_password: "<your_docker_password>"
+    docker_username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
+    docker_password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
   tasks:
     - name: Navigate to directory containing docker-compose.yml
       ansible.builtin.shell: cd /home/ec2-user
