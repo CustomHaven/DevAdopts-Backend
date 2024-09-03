@@ -12,6 +12,16 @@ pipeline {
                 checkout scm
             }
         }
+        stage("Prepare Workspace Permissions") {
+            steps {
+                script {
+                    sh """
+                    sudo chown -R jenkins:jenkins /var/lib/jenkins/workspace/DevAdopt-Ansible-EC2-Configuration-Pipeline
+                    sudo chmod -R 755 /var/lib/jenkins/workspace/DevAdopt-Ansible-EC2-Configuration-Pipeline
+                    """
+                }
+            }
+        }
         stage("Prepare Ansible") {
             steps {
                 script {
@@ -38,7 +48,6 @@ pipeline {
 
                         // Create a temporary directory within the Jenkins workspace
                         def tempDir = "${WORKSPACE}/temp"
-                        sh "rm -rf ${tempDir} && mkdir -p ${tempDir}"
                         sh "mkdir -p ${tempDir}"
 
                         sh """
