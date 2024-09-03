@@ -7,7 +7,7 @@
         chdir: /home/ec2-user
 
     - name: Pull Docker images
-      ansible.builtin.shell: |
+      shell: |
         docker pull {{ lookup('env', 'IMAGE_DB_TAG') }}
         docker pull {{ lookup('env', 'IMAGE_MVC_TAG') }}
       args:
