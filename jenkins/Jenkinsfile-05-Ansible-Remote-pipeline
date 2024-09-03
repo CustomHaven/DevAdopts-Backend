@@ -3,6 +3,8 @@ pipeline {
     environment {
         ANSIBLE_CONFIG = "${WORKSPACE}/ansible/ansible.cfg"
         ANSIBLE_HOSTS = "${WORKSPACE}/ansible/ansible_hosts"
+        DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:${params.BUILD_ID}"
+        DOCKER_IMAGE_DB = "customhaven/devadopt_db:72"
         AWS_PEM_ID = credentials('AWS_PEM_ID')
     }
     stages {
@@ -31,6 +33,8 @@ pipeline {
                         for (host in hosts) {
                             sh """
                             cp ${EN_FILE_MVC} .env
+                            sh "echo IMAGE_MVC_TAG=${env.DOCKER_IMAGE_MVC} >> .env"
+                            sh "echo IMAGE_DB_TAG=${env.DOCKER_IMAGE_DB} >> .env"
                             scp -o StrictHostKeyChecking=no -i ~/.ssh/default-ec2.pem .env ec2-user@${host}:/home/ec2-user/
                             scp -o StrictHostKeyChecking=no -i ~/.ssh/default-ec2.pem docker-compose.yml ec2-user@${host}:/home/ec2-user/
                             rm .env
