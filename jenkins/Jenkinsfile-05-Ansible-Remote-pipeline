@@ -43,66 +43,40 @@ pipeline {
         stage('Check Permissions') {
             steps {
                 script {
-                    def workspacePath = '${WORKSPACE}'
-
-                    // Check directory ownership and permissions
-                    sh "ls -ld ${workspacePath}"
+                    sh "ls -ld ${env.WORKSPACE}"
                 }
             }
         }
         stage('Test Permissions') {
             steps {
                 script {
-                    // Define the path to the workspace
-                    def workspacePathe = '${WORKSPACE}'
-
-                    // Create a test file
-                    sh "echo 'Hello, World!' > ${workspacePathe}/test.txt"
-
-                    // Check if the file was created successfully
-                    sh "cat ${workspacePathe}/test.txt"
-
-                    // List files in the workspace directory
-                    sh "ls -l ${workspacePathe}/"
-
-                    // Remove the test file
-                    sh "rm ${workspacePathe}/test.txt"
+                    sh """
+                    echo 'Hello, World!' > ${env.WORKSPACE}/test.txt
+                    cat ${env.WORKSPACE}/test.txt
+                    ls -l ${env.WORKSPACE}/
+                    rm ${env.WORKSPACE}/test.txt
+                    """
                 }
             }
         }
         stage("Send Docker-Compose to EC2 Instances") {
             steps {
                 script {
-                    // Print the contents of the Ansible config
                     sh "cat ${ANSIBLE_CONFIG}"
-
-                    // Use Jenkins credentials to access the environment file
                     withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
-                        // Read the hosts from the Ansible hosts file
                         def hosts = readFile("${ANSIBLE_HOSTS}").split("\n").findAll { it =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ }
-                        sh "ls -ld ${workspacePath}"
-                        // Define a temporary directory within the Jenkins workspace
-                        def tempDir = "${WORKSPACE}/temp"
-
-                        // Create the temporary directory
-                        sh "mkdir -p ${tempDir}"
-
-                        sh "chmod 777 ${tempDir}"
-
-                        // Copy the environment file and append Docker image tags
+                        def tempDir = "${env.WORKSPACE}/temp"
                         sh """
-                        cp ${ENV_FILE_MVC} ${tempDir}/.env 
+                        mkdir -p ${tempDir}
+                        chmod 777 ${tempDir}
+                        cp ${ENV_FILE_MVC} ${tempDir}/.env
                         echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${tempDir}/.env
                         echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${tempDir}/.env
                         """
-
-                        // Loop through each host and copy the files using SCP
                         for (host in hosts) {
                             sh 'scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem ${tempDir}/.env ec2-user@${host}:/home/ec2-user/'
                             sh 'scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem docker-compose.yml ec2-user@${host}:/home/ec2-user/'
                         }
-
-                        // Clean up the temporary directory
                         sh "rm -rf ${tempDir} && mkdir -p ${tempDir}"
                     }
                 }
