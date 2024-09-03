@@ -36,16 +36,21 @@ pipeline {
                     withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
                         def hosts = readFile("${ANSIBLE_HOSTS}").split("\n").findAll { it =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ }
 
+                        // Create a temporary directory for the .env file
+                        sh 'mkdir -p /tmp/env_dir'
+                        
                         for (host in hosts) {
                             sh """
-                            cp ${ENV_FILE_MVC} .env
-                            echo 'IMAGE_MVC_TAG=${env.DOCKER_IMAGE_MVC}' >> .env
-                            echo 'IMAGE_DB_TAG=${env.DOCKER_IMAGE_DB}' >> .env
-                            scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem .env ec2-user@${host}:/home/ec2-user/
+                            cp ${ENV_FILE_MVC} /tmp/env_dir/.env
+                            echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> /tmp/env_dir/.env
+                            echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> /tmp/env_dir/.env
+                            scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem /tmp/env_dir/.env ec2-user@${host}:/home/ec2-user/
                             scp -o StrictHostKeyChecking=no -i ${env.SSH_DIR}/default-ec2.pem docker-compose.yml ec2-user@${host}:/home/ec2-user/
-                            rm .env
                             """
                         }
+                        
+                        // Clean up
+                        sh 'rm -rf /tmp/env_dir'
                     }
                 }
             }
