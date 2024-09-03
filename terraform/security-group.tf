@@ -36,14 +36,14 @@ resource "aws_security_group_rule" "app_port_ingress" {
     security_group_id = aws_security_group.http_server_sg.id
 }
 
-resource "aws_security_group_rule" "postgres_ingress" {
-    type                        = "ingress"
-    from_port                   = 5432
-    to_port                     = 5432
-    protocol                    = "tcp"
-    cidr_blocks                 = ["0.0.0.0/0"]
-    security_group_id           = aws_security_group.http_server_sg.id
-}
+# resource "aws_security_group_rule" "postgres_ingress" {
+#     type                        = "ingress"
+#     from_port                   = 5432
+#     to_port                     = 5432
+#     protocol                    = "tcp"
+#     cidr_blocks                 = ["0.0.0.0/0"]
+#     security_group_id           = aws_security_group.http_server_sg.id
+# }
 
 resource "aws_security_group_rule" "egress" {
     type = "egress"
@@ -94,11 +94,11 @@ resource "aws_security_group_rule" "elb_egress" {
 }
 
 
-resource "aws_security_group_rule" "postgres_ingress_from_elb" {
-    type                        = "ingress"
-    from_port                   = 5432
-    to_port                     = 5432
-    protocol                    = "tcp"
-    cidr_blocks                 = ["0.0.0.0/0"]
-    security_group_id           = aws_security_group.http_server_sg.id
-}
+# resource "aws_security_group_rule" "postgres_ingress_from_elb" {
+#     type                        = "ingress"
+#     from_port                   = 5432
+#     to_port                     = 5432
+#     protocol                    = "tcp"
+#     cidr_blocks                 = ["0.0.0.0/0"]
+#     security_group_id           = aws_security_group.http_server_sg.id
+# }
