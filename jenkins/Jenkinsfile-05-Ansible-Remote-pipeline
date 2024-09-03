@@ -67,9 +67,8 @@ pipeline {
                         sh """
                         mkdir -p ${WORKSPACE}/test_dir
                         chmod 777 ${WORKSPACE}/test_dir
-                        cp ${ENV_FILE_MVC} ${WORKSPACE}/test_dir/.env
-                        echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${WORKSPACE}/test_dir/.env
-                        echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${WORKSPACE}/test_dir/.env
+                        echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${WORKSPACE}/test_dir/${ENV_FILE_MVC}
+                        echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${WORKSPACE}/test_dir/${ENV_FILE_MVC}
                         cat ${WORKSPACE}/test_dir/.env
                         """
                     }
