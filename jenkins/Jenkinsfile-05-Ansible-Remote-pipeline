@@ -22,10 +22,10 @@ pipeline {
                     """
                     withCredentials([file(credentialsId: 'AWS_PEM_ID', variable: 'AWS_PEM_ID_FILE')]) {
                         sh """
-                        echo "$AWS_PEM_ID_FILE" > ${sshDir}/default-ec2.pem
+                        echo '$AWS_PEM_ID_FILE' > ${sshDir}/default-ec2.pem
                         chmod 600 ${sshDir}/default-ec2.pem
 
-                        sed -i "s|private_key_file=.*|private_key_file=${sshDir}/default-ec2.pem|" ${ANSIBLE_CONFIG}
+                        sed -i 's|private_key_file=.*|private_key_file=${sshDir}/default-ec2.pem|' ${ANSIBLE_CONFIG}
                         """
                     }
                 }
@@ -39,14 +39,14 @@ pipeline {
                         def hosts = readFile("${ANSIBLE_HOSTS}").split("\n").findAll { it =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ }
 
                         for (host in hosts) {
-                            sh """
+                            sh '''
                             cp ${ENV_FILE_MVC} .env
                             echo "IMAGE_MVC_TAG=${env.DOCKER_IMAGE_MVC}" >> .env
                             echo "IMAGE_DB_TAG=${env.DOCKER_IMAGE_DB}" >> .env
                             scp -o StrictHostKeyChecking=no -i ${sshDir}/default-ec2.pem .env ec2-user@${host}:/home/ec2-user/
                             scp -o StrictHostKeyChecking=no -i ${sshDir}/default-ec2.pem docker-compose.yml ec2-user@${host}:/home/ec2-user/
                             rm .env
-                            """
+                            '''
                         }
                     }
                 }
