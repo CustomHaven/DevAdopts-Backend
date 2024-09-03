@@ -68,6 +68,7 @@ pipeline {
                         def tempDir = "${env.WORKSPACE}/temp"
                         sh """
                         mkdir -p ${tempDir}
+                        chmod 777 ${tempDir}
                         cp ${ENV_FILE_MVC} ${tempDir}/.env
                         echo 'IMAGE_MVC_TAG=${DOCKER_IMAGE_MVC}' >> ${tempDir}/.env
                         echo 'IMAGE_DB_TAG=${DOCKER_IMAGE_DB}' >> ${tempDir}/.env
