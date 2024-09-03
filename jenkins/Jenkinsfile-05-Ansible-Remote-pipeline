@@ -7,8 +7,6 @@ pipeline {
         DOCKER_IMAGE_DB = "customhaven/devadopt_db:72"
         WORKSPACE_PATH = "${env.WORKSPACE}"
         DOCKER_CREDENTIALS_ID = "DOCKER_CREDENTIALS_ID"
-        dockerHome = tool "myDocker"
-		PATH = "$dockerHome/bin:$PATH"
     }
     stages {
         stage("Checkout Code") {
@@ -102,13 +100,11 @@ pipeline {
         stage('Run Docker Compose Playbook') {
             steps {
                 script {
-                    docker.withRegistry("", "dockerhub") {
-                        dir("ansible") {
-                            withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                sh """
-                                ansible-playbook -i ${ANSIBLE_HOSTS} ${WORKSPACE}/ansible/playbooks/docker-run.yml
-                                """
-                            }
+                    dir("ansible") {
+                        withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                            sh """
+                            ansible-playbook -i ${ANSIBLE_HOSTS} ${WORKSPACE}/ansible/playbooks/docker-run.yml
+                            """
                         }
                     }
                 }
