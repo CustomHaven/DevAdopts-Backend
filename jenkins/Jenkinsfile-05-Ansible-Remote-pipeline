@@ -39,6 +39,26 @@ pipeline {
                 }
             }
         }
+        stage('Test Permissions') {
+            steps {
+                script {
+                    // Define the path to the workspace
+                    def workspacePath = '/var/jenkins_home/workspace'
+                    
+                    // Create a test file
+                    sh "echo 'Hello, World!' > ${workspacePath}/test.txt"
+                    
+                    // Check if the file was created successfully
+                    sh "cat ${workspacePath}/test.txt"
+                    
+                    // List files in the workspace directory
+                    sh "ls -l ${workspacePath}/"
+                    
+                    // Remove the test file
+                    sh "rm ${workspacePath}/test.txt"
+                }
+            }
+        }
         stage("Send Docker-Compose to EC2 Instances") {
             steps {
                 script {
