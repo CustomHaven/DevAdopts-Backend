@@ -41,7 +41,7 @@ resource "aws_security_group_rule" "postgres_ingress" {
     from_port                   = 5432
     to_port                     = 5432
     protocol                    = "tcp"
-    source_security_group_id    = aws_security_group.http_server_sg.id
+    cidr_blocks                 = ["0.0.0.0/0"]
     security_group_id           = aws_security_group.http_server_sg.id
 }
 
@@ -99,6 +99,6 @@ resource "aws_security_group_rule" "postgres_ingress_from_elb" {
     from_port                   = 5432
     to_port                     = 5432
     protocol                    = "tcp"
-    source_security_group_id    = aws_security_group.elb_sg.id
+    cidr_blocks                 = ["0.0.0.0/0"]
     security_group_id           = aws_security_group.http_server_sg.id
 }
