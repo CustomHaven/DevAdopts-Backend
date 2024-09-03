@@ -6,14 +6,29 @@
       args:
         chdir: /home/ec2-user
 
+    - name: Echo Docker image tags
+      shell: |
+        echo "Pulling Docker images:"
+        echo "DB Image Tag: {{ lookup('env', 'IMAGE_DB_TAG') }}"
+        echo "MVC Image Tag: {{ lookup('env', 'IMAGE_MVC_TAG') }}"
+      args:
+        chdir: /home/ec2-user
+
     - name: Pull Docker images
       shell: |
-        docker pull {{ lookup('env', 'IMAGE_DB_TAG') }}
-        docker pull {{ lookup('env', 'IMAGE_MVC_TAG') }}
+        echo "Pulling Docker image for DB..."
+        docker pull {{ lookup('env', 'IMAGE_DB_TAG') }} >> docker_pull.log 2>&1
+        echo "Pulling Docker image for MVC..."
+        docker pull {{ lookup('env', 'IMAGE_MVC_TAG') }} >> docker_pull.log 2>&1
+      args:
+        chdir: /home/ec2-user
+
+    - name: Display Docker pull log
+      ansible.builtin.shell: cat docker_pull.log
       args:
         chdir: /home/ec2-user
 
     - name: Run docker-compose 
-      shell: docker-compose up
+      shell: docker-compose up -d
       args:
         chdir: /home/ec2-user
