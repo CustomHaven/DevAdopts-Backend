@@ -54,7 +54,9 @@ pipeline {
                     env.ARGS_ENV = "/tmp/.args"
                     sh """
                     mkdir -p ${env.ARGS_ENV}
+                    touch ${env.ARGS_ENV}/.env
                     chmod 700 /tmp/.args
+                    chmod 700 /tmp/.args/.env
                     ls -ld ${env.ARGS_ENV}
                     """
                     withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
