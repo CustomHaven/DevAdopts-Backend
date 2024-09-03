@@ -18,7 +18,7 @@ pipeline {
                 sh '''
                 mkdir -p ~/.ssh
                 echo "$AWS_PEM_ID" > ~/.ssh/default-ec2.pem
-                chmod 400 ~/.ssh/default-ec2.pem
+                chmod 600 ~/.ssh/default-ec2.pem
 
                 sed -i "s|private_key_file=.*|private_key_file=~/.ssh/default-ec2.pem|" ${ANSIBLE_CONFIG}
                 '''
@@ -27,6 +27,7 @@ pipeline {
         stage("Send Docker-Compose to EC2 Instances") {
             steps {
                 script {
+                    sh "cat $ANSIBLE_CONFIG"
                     withCredentials([file(credentialsId: "DevAdopts_ENV", variable: "ENV_FILE_MVC")]) {
                         def hosts = readFile("${ANSIBLE_HOSTS}").split("\n").findAll { it =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/ }
 
