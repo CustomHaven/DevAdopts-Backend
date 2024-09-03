@@ -16,13 +16,13 @@ pipeline {
         stage("Prepare Ansible") {
             steps {
                 script {
-                    def sshDir = "/tmp/.ssh" // Use /tmp for write access
+                    def sshDir = "/tmp/.ssh"
                     sh """
                     mkdir -p ${sshDir}
                     """
                     withCredentials([file(credentialsId: 'AWS_PEM_ID', variable: 'AWS_PEM_ID_FILE')]) {
                         sh """
-                        echo "$AWS_PEM_ID" > ${sshDir}/default-ec2.pem
+                        echo "$AWS_PEM_ID_FILE" > ${sshDir}/default-ec2.pem
                         chmod 600 ${sshDir}/default-ec2.pem
 
                         sed -i "s|private_key_file=.*|private_key_file=${sshDir}/default-ec2.pem|" ${ANSIBLE_CONFIG}
