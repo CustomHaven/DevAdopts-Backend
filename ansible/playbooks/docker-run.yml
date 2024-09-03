@@ -1,25 +1,27 @@
 - hosts: production
   become: true
+  vars:
+    IMAGE_DB_TAG: "customhaven/devadopt_db:72"
+    IMAGE_MVC_TAG: "customhaven/devadopt_mvc:77"
   tasks:
     - name: Navigate to directory containing docker-compose.yml
-      shell: cd ~/
+      ansible.builtin.shell: cd /home/ec2-user
       args:
         chdir: /home/ec2-user
 
     - name: Echo Docker image tags
-      shell: |
-        echo "Pulling Docker images:"
-        echo "DB Image Tag: {{ lookup('env', 'IMAGE_DB_TAG') }}"
-        echo "MVC Image Tag: {{ lookup('env', 'IMAGE_MVC_TAG') }}"
-      args:
-        chdir: /home/ec2-user
+      ansible.builtin.debug:
+        msg: |
+          Pulling Docker images:
+          DB Image Tag: {{ IMAGE_DB_TAG }}
+          MVC Image Tag: {{ IMAGE_MVC_TAG }}
 
     - name: Pull Docker images
-      shell: |
+      ansible.builtin.shell: |
         echo "Pulling Docker image for DB..."
-        docker pull {{ lookup('env', 'IMAGE_DB_TAG') }} >> docker_pull.log 2>&1
+        docker pull {{ IMAGE_DB_TAG }} >> docker_pull.log 2>&1
         echo "Pulling Docker image for MVC..."
-        docker pull {{ lookup('env', 'IMAGE_MVC_TAG') }} >> docker_pull.log 2>&1
+        docker pull {{ IMAGE_MVC_TAG }} >> docker_pull.log 2>&1
       args:
         chdir: /home/ec2-user
 
@@ -28,7 +30,7 @@
       args:
         chdir: /home/ec2-user
 
-    - name: Run docker-compose 
-      shell: docker-compose up -d
+    - name: Run docker-compose
+      ansible.builtin.shell: docker-compose up -d
       args:
         chdir: /home/ec2-user
