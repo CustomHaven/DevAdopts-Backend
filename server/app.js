@@ -14,7 +14,7 @@ const googleMapRouter = require("./routers/googleMapRouter");
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:4728", "http://localhost:4000"],
+  origin: ["http://localhost:4728", "http://localhost:3000"],
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTION"],
   allowedHeaders: ["Content-Type", "Accept", "Authorization"],
   credentials: true,

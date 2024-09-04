@@ -45,10 +45,17 @@ resource "aws_elb" "elb" {
     # instances = aws_instance.http_servers.*.ids
     instances = values(aws_instance.http_servers).*.id
     listener {
-        instance_port = 3333
+        instance_port = 80
         instance_protocol = "http"
         lb_port = 80
         lb_protocol = "http"
+    }
+    health_check {
+        target              = "HTTP:80/"
+        interval            = 30
+        timeout             = 5
+        healthy_threshold   = 2
+        unhealthy_threshold = 2
     }
 }
 
