@@ -2,7 +2,7 @@
   become: true
   vars:
     IMAGE_DB_TAG: "customhaven/devadopt-db:72"
-    IMAGE_MVC_TAG: "customhaven/devadopt_mvc:180"
+    IMAGE_MVC_TAG: "customhaven/devadopt_mvc:185"
     docker_username: "{{ lookup('env', 'DOCKER_USERNAME') }}"
     docker_password: "{{ lookup('env', 'DOCKER_PASSWORD') }}"
   tasks:
