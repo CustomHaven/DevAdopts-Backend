@@ -39,40 +39,22 @@ class Dog {
         }
     }
 
-    static async populateAssociations(dog_id) {
+    static async populateAssociations(dog, dog_id) {
         // Gather the adoption plans
         let initial, monthly, lta;
         initial = await InitialAdoption.show(dog_id);
         if (initial.error) {
-            await calculateAdoptionCosts(dog_id, Dog, InitialAdoption, MonthlyAdoption, LongTermAdoption, getCostsBySize);
+            const cal = await calculateAdoptionCosts(dog, InitialAdoption, MonthlyAdoption, LongTermAdoption, getCostsBySize);
         }
         
         initial = await InitialAdoption.show(dog_id);
         monthly = await MonthlyAdoption.show(dog_id);
         lta = await LongTermAdoption.show(dog_id);
 
-        console.log("initial")
-        console.log(initial)
-
-        console.log("monthly")
-        console.log(monthly)
-
-        console.log("lta")
-        console.log(lta)
-
         // Gather the adoption plans additional assoiciated costs
         const initialPopulated = await initial.populateAssociations();
         const monthlyPopulated = await monthly.populateAssociations();
         const ltaPopulated = await lta.populateAssociations();
-
-        console.log("initial populate")
-        console.log(initialPopulated)
-
-        console.log("monthly populate")
-        console.log(monthlyPopulated)
-
-        console.log("lta populate")
-        console.log(ltaPopulated)
 
         return {
             InitialAdoption: initialPopulated,
@@ -82,31 +64,13 @@ class Dog {
     }
 
     static async getAll() {
-        console.log("getALL")
-        const org = {
-            user: process.env.DB_USER,
-            host: process.env.DB_HOST,
-            database: process.env.DB_NAME,
-            password: process.env.DB_PASSWORD,
-            port: process.env.DB_PORT
-        }
-
-        console.log("org", org);
         const dog = await db.query("SELECT * FROM dogs");
-        console.log("dog result query: ");
-        const memoryUsage = process.memoryUsage();
-        console.log('NODE_OPTIONS:', process.env.NODE_OPTIONS);
-        console.log('Memory Usage:');
-        console.log(`RSS: ${Math.round(memoryUsage.rss / 1024 / 1024)} MB`);
-        console.log(`Heap Total: ${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`);
-        console.log(`Heap Used: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`);
-        console.log(`External: ${Math.round(memoryUsage.external / 1024 / 1024)} MB`);
-        console.log(dog.rows.length);
         if (dog.rows.length === 0) {
             throw new Error("No dogs available");
         }
         return await Promise.all(dog.rows.map(async b => {
-            const associates = await Dog.populateAssociations(b.dog_id);
+            // STOPS WORKING IN populateAssociations
+            const associates = await Dog.populateAssociations(b, b.dog_id);
             const ob = {
                 ...b, associates: { ...associates }
             }
@@ -119,12 +83,16 @@ class Dog {
         if (response.rows.length !== 1) {
             throw new Error("No dog found");
         }
-        const associates = await Dog.populateAssociations(id);
+
+
+        const dog = response.rows[0];
+
+        const associates = await Dog.populateAssociations(dog, dog.dog_id);
 
         const obj = {
-            ...response.rows[0], associates: { ...associates }
+            ...dog, associates: { ...associates }
         }
-        return new Dog(obj);
+        return new Dog(obj);;
     }
 
     static async create(data) {

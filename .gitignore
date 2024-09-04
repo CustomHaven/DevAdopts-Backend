@@ -9,3 +9,5 @@ coverage
 secret.txt
 test.txt
 coverage.txt
+.vscode
+.clinic

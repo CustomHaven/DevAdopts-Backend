@@ -22,10 +22,6 @@ const createPool = () => {
     } : {
         connectionString: process.env.DB_URL 
     };
-
-    console.log("NODE_ENV", process.env.NODE_ENV)
-
-    console.log("OPTIONS? NODE_ENV is production!", option)
     
     return new Pool(option);
 };
@@ -33,7 +29,7 @@ const createPool = () => {
 const getDBInstance = () => {
     if (!pool) {
         pool = createPool();
-        // console.log("Database pool created");
+        console.log("Database pool created");
     }
     return pool;
 };

@@ -1,17 +1,13 @@
-async function calculateAdoptionCosts(dogId, Dog, InitialAdoption, MonthlyAdoption, LongTermAdoption, getCostsBySize) {
+async function calculateAdoptionCosts(Dog, InitialAdoption, MonthlyAdoption, LongTermAdoption, getCostsBySize) {
   try {
-    // console.log("inside service", dogId);
-    const dogResult = await Dog.show(dogId);
-    // console.log("service dogResult", dogResult);
+
+    const dogResult = Dog;
 
     const costOfValues = await getCostsBySize(
       dogResult.gender,
       dogResult.size,
       dogResult.neutered
     );
-
-    console.log("Costod=f Vaues");
-    console.log(costOfValues);
 
     let neuteredPrice = dogResult.neutered ? 0 : costOfValues.neuter.price;
     const microchipPrice = dogResult.microchipped ? 0 : 10.9;
