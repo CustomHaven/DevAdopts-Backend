@@ -93,7 +93,14 @@ class Dog {
 
         console.log("org", org);
         const dog = await db.query("SELECT * FROM dogs");
-        console.log("dog result query: ")
+        console.log("dog result query: ");
+        const memoryUsage = process.memoryUsage();
+        console.log('NODE_OPTIONS:', process.env.NODE_OPTIONS);
+        console.log('Memory Usage:');
+        console.log(`RSS: ${Math.round(memoryUsage.rss / 1024 / 1024)} MB`);
+        console.log(`Heap Total: ${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`);
+        console.log(`Heap Used: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`);
+        console.log(`External: ${Math.round(memoryUsage.external / 1024 / 1024)} MB`);
         console.log(dog.rows.length);
         if (dog.rows.length === 0) {
             throw new Error("No dogs available");
