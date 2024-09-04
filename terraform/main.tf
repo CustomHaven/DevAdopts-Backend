@@ -45,7 +45,7 @@ resource "aws_elb" "elb" {
     # instances = aws_instance.http_servers.*.ids
     instances = values(aws_instance.http_servers).*.id
     listener {
-        instance_port = 3333
+        instance_port = 80
         instance_protocol = "http"
         lb_port = 80
         lb_protocol = "http"
