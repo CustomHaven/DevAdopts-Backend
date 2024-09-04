@@ -59,7 +59,7 @@ resource "aws_security_group" "elb_sg" {
 
 resource "aws_security_group_rule" "elb_app_port_ingress" {
     type = "ingress"
-    from_port = 80
+    from_port = 3333
     to_port = 3333
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]

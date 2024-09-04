@@ -45,13 +45,13 @@ resource "aws_elb" "elb" {
     # instances = aws_instance.http_servers.*.ids
     instances = values(aws_instance.http_servers).*.id
     listener {
-        instance_port = 80
+        instance_port = 3333
         instance_protocol = "http"
         lb_port = 80
         lb_protocol = "http"
     }
     health_check {
-        target              = "HTTP:80/"
+        target              = "HTTP:3333/"
         interval            = 30
         timeout             = 5
         healthy_threshold   = 2
@@ -68,4 +68,8 @@ output "dns_public_ips" {
 
 output "elb_public_dns" {
     value = aws_elb.elb.dns_name
+}
+
+output "elb_health_check_target" {
+    value = aws_elb.elb.health_check.*.target
 }
