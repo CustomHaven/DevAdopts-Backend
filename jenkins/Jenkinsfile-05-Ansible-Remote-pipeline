@@ -3,7 +3,7 @@ pipeline {
     environment {
         ANSIBLE_CONFIG = "${WORKSPACE}/ansible/ansible.cfg"
         ANSIBLE_HOSTS = "${WORKSPACE}/ansible/ansible_hosts"
-        DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:3.8"
+        DOCKER_IMAGE_MVC = "customhaven/devadopt_mvc:180"
         DOCKER_IMAGE_DB = "customhaven/devadopt-db:72"
         WORKSPACE_PATH = "${env.WORKSPACE}"
         DOCKER_CREDENTIALS_ID = "DOCKER_CREDENTIALS_ID"
