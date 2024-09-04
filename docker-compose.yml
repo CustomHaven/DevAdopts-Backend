@@ -11,6 +11,13 @@ services:
             - devadopt-network
         env_file:
             .env
+        environment:
+            - NODE_OPTIONS=--max-old-space-size=8192
+        deploy:
+            resources:
+                limits:
+                    memory: 16G    # Limit to 16GB
+                    cpus: "6.0"   # Limit to 6 CPUs
 
     devadopt-db:
         image: ${IMAGE_DB_TAG}
