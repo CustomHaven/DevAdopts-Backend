@@ -25,9 +25,9 @@ resource "aws_instance" "http_servers" {
     key_name = "default-ec2"
     instance_type = "c5.2xlarge"
     vpc_security_group_ids = [aws_security_group.http_server_sg.id]
-    # for_each = toset(data.aws_subnets.default_subnets.ids)
-    # subnet_id = each.value
-    subnet_id = data.aws_subnets.default_subnets.ids[0]
+    for_each = toset(data.aws_subnets.default_subnets.ids)
+    subnet_id = each.value
+    # subnet_id = data.aws_subnets.default_subnets.ids[0]
     connection {
         type = "ssh"
         host = self.public_ip
@@ -38,27 +38,27 @@ resource "aws_instance" "http_servers" {
 }
 
 
-# resource "aws_elb" "elb" {
-#     name = "elb"
-#     subnets = data.aws_subnets.default_subnets.ids
-#     security_groups = [aws_security_group.elb_sg.id]
-#     # instances = aws_instance.http_servers.*.ids
-#     instances = values(aws_instance.http_servers).*.id
-#     listener {
-#         instance_port = 80
-#         instance_protocol = "http"
-#         lb_port = 80
-#         lb_protocol = "http"
-#     }
-# }
+resource "aws_elb" "elb" {
+    name = "elb"
+    subnets = data.aws_subnets.default_subnets.ids
+    security_groups = [aws_security_group.elb_sg.id]
+    # instances = aws_instance.http_servers.*.ids
+    instances = values(aws_instance.http_servers).*.id
+    listener {
+        instance_port = 80
+        instance_protocol = "http"
+        lb_port = 80
+        lb_protocol = "http"
+    }
+}
 
 # We have 3 subnets accordingly I think there should be 3 public ips for each subnet dont I need to do a loop? for the output
-# output "dns_public_ips" {
-#     value = [for instance in aws_instance.http_servers : instance.public_ip]
-# }
+output "dns_public_ips" {
+    value = [for instance in aws_instance.http_servers : instance.public_ip]
+}
 
-# # 13.40.43.201  
+# 13.40.43.201  
 
-# output "elb_public_dns" {
-#     value = aws_elb.elb.dns_name
-# }
+output "elb_public_dns" {
+    value = aws_elb.elb.dns_name
+}
