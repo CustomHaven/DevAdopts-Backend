@@ -12,7 +12,7 @@ services:
         env_file:
             .env
         environment:
-            - NODE_OPTIONS=--max-old-space-size=8192
+            - NODE_OPTIONS=--max-old-space-size=14336
         deploy:
             resources:
                 limits:
