@@ -23,7 +23,7 @@ provider "aws" {
 resource "aws_instance" "http_servers" {
     ami = "ami-0c0493bbac867d427"
     key_name = "default-ec2"
-    instance_type = "t2.micro"
+    instance_type = "c5.2xlarge"
     vpc_security_group_ids = [aws_security_group.http_server_sg.id]
     for_each = toset(data.aws_subnets.default_subnets.ids)
     subnet_id = each.value
