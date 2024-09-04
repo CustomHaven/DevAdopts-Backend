@@ -1,6 +1,9 @@
+require("dotenv").config();
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const path = require("path");
+
+const URL = process.env.URL;
 
 const swaggerDefinition = {
     openapi: "3.0.0",
@@ -11,7 +14,7 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: `http://localhost:4000`,
+            url: URL,
         },
     ],
     components: {
