@@ -30,16 +30,16 @@ async function interactWithAI(req, res) {
             return finalObject;
         })[0];
 
-        refinedObj.small_animals = "I have 4";
-        refinedObj.young_children = "I have 6";
-        refinedObj.activity = "High";
-        refinedObj.living_space_size = "large";
-        refinedObj.garden = "yes";
-        refinedObj.allergy_information = "High";
-        refinedObj.other_animals = "3 cats";
-        refinedObj.fencing = "6 foot";
-        refinedObj.previous_experience_years = "yes i got 5 years";
-        refinedObj.annual_income= 50000;
+        // refinedObj.small_animals = "I have 4";
+        // refinedObj.young_children = "I have 6";
+        // refinedObj.activity = "High";
+        // refinedObj.living_space_size = "large";
+        // refinedObj.garden = "yes";
+        // refinedObj.allergy_information = "High";
+        // refinedObj.other_animals = "3 cats";
+        // refinedObj.fencing = "6 foot";
+        // refinedObj.previous_experience_years = "yes i got 5 years";
+        // refinedObj.annual_income= 50000;
 
         const updateQuestion = updateWhatToAsk(whatToAsk, requiredKeys, refinedObj);
         
@@ -102,6 +102,7 @@ async function update(req, res) {
 
 async function create(req, res) {
     try {
+        console.log("create reached", req.body);
         const data = req.body;
         const newPreference = await Preference.create(data.user_id);
         res.status(201).json({ data: newPreference });

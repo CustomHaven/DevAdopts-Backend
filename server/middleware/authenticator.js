@@ -3,6 +3,7 @@ const BlacklistToken = require("../models/BlacklistToken");
 
 async function authenticator(req, res, next) {
   const authHeader = req.headers.authorization;
+  console.log("aut", authHeader)
   if (authHeader) {
     const token = authHeader.split(" ")[1];
     const blacklist = await BlacklistToken.show(token);

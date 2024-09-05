@@ -6,18 +6,18 @@ app.listen(process.env.PORT, () => {
 })
 
 // Memory usage logging
-setInterval(() => {
-    const memoryUsage = process.memoryUsage();
-    // Memory
-    console.log('Memory Usage:');
-    console.log(`RSS: ${Math.round(memoryUsage.rss / 1024 / 1024)} MB`);
-    console.log(`Heap Total: ${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`);
-    console.log(`Heap Used: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`);
-    console.log(`External: ${Math.round(memoryUsage.external / 1024 / 1024)} MB`);
+// setInterval(() => {
+//     const memoryUsage = process.memoryUsage();
+//     // Memory
+//     console.log('Memory Usage:');
+//     console.log(`RSS: ${Math.round(memoryUsage.rss / 1024 / 1024)} MB`);
+//     console.log(`Heap Total: ${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`);
+//     console.log(`Heap Used: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`);
+//     console.log(`External: ${Math.round(memoryUsage.external / 1024 / 1024)} MB`);
 
-    // CPU
-    // CPU usage
-}, 60000); // Logs memory usage every 60 seconds
+//     // CPU
+//     // CPU usage
+// }, 60000); // Logs memory usage every 60 seconds
 // require("dotenv").config();
 // const { trainNlp } = require("./services/runTrainedAI");
 // const ai21 = require("./services/ai21");
