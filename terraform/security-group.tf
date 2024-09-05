@@ -18,7 +18,7 @@ resource "aws_security_group_rule" "http_ingress" {
     security_group_id = aws_security_group.http_server_sg.id
 }
 
-resource "aws_security_group_rule" "http_ingress" {
+resource "aws_security_group_rule" "https_ingress" {
     type                   = "ingress"
     from_port              = 443
     to_port                = 443
